@@ -22,12 +22,15 @@ description:         Please see the README on GitHub at <https://github.com/gith
 dependencies:
 - name: base
   version: ">= 4.7 && <5"
-  mixin:
-    - hiding (Prelude)
-- name: relude
-  version: "^>= 1.1.0.0"
-  mixin:
-    - (Relude as Prelude)
+#  mixin:
+#- hiding (Prelude)
+#- name: relude
+#  version: "^>= 1.1.0.0"
+#  mixin:
+#    - (Relude as Prelude)
+- sdl2
+- sdl2-ttf
+- sdl2-image
 
 ghc-options:
 - -Wall
