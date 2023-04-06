@@ -36,6 +36,7 @@ library
     , sdl2
     , sdl2-image
     , sdl2-ttf
+    , text
   default-language: Haskell2010
 
 executable cookpon-exe
@@ -51,6 +52,7 @@ executable cookpon-exe
     , sdl2
     , sdl2-image
     , sdl2-ttf
+    , text
   default-language: Haskell2010
 
 test-suite cookpon-test
@@ -67,4 +69,5 @@ test-suite cookpon-test
     , sdl2
     , sdl2-image
     , sdl2-ttf
+    , text
   default-language: Haskell2010
