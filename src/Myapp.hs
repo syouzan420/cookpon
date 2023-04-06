@@ -24,9 +24,13 @@ import Data.List (elemIndex)
 import Data.Maybe (fromMaybe)
 
 type Pos = (Double,Double)
-data State = State{pos:: V2 CInt}
+data State = State{pos:: V2 CInt, kec:: CInt}
 
-initState = State{pos=V2 100 100}
+initState :: State
+initState = State{pos=V2 100 100, kec=0} --kec:KeyboardEventCount
+
+initKeyEventCount :: CInt
+initKeyEventCount = 10
 
 appMain :: IO ()
 appMain = do
@@ -41,20 +45,20 @@ appMain = do
   image2 <- load "images/chara.png"
   renderer <- createRenderer window (-1) defaultRenderer
   texs <- mapM (createTextureFromSurface renderer) [fontS,image,image2]
-  _ <- mapM freeSurface [image,image2]
+  mapM_ freeSurface [image,image2]
   state <- newIORef initState
   tm <- addTimer 50 (moveChara state renderer texs)
   ev <- addEventWatch (inputEvent state)
   appLoop
   delEventWatch ev
-  removeTimer tm
+  _ <- removeTimer tm
   destroyWindow window
 
 appLoop :: IO ()
 appLoop = do
   events <- pollEvents
-  let eventIsQPress events =
-        case eventPayload events of
+  let eventIsQPress e =
+        case eventPayload e of
           KeyboardEvent keyboardEvent ->
             keyboardEventKeyMotion keyboardEvent == Pressed &&
             keysymKeycode (keyboardEventKeysym keyboardEvent) == KeycodeQ
@@ -65,38 +69,45 @@ appLoop = do
 inputEvent :: IORef State -> EventWatchCallback
 inputEvent state event = do
   st <- readIORef state
-  let ps@(V2 px py) = pos st
-      eventIsHPress event =
-        case eventPayload event of
+  let kc = kec st
+  let (V2 px py) = pos st
+  let eventIsHPress e =
+        case eventPayload e of
           KeyboardEvent keyboardEvent ->
             keyboardEventKeyMotion keyboardEvent == Pressed &&
               keysymKeycode (keyboardEventKeysym keyboardEvent) == KeycodeH
           _ -> False
-      eventIsJPress event =
-        case eventPayload event of
+  let eventIsJPress e =
+        case eventPayload e of
           KeyboardEvent keyboardEvent ->
             keyboardEventKeyMotion keyboardEvent == Pressed &&
               keysymKeycode (keyboardEventKeysym keyboardEvent) == KeycodeJ
           _ -> False
-      eventIsKPress event =
-        case eventPayload event of
+  let eventIsKPress e =
+        case eventPayload e of
           KeyboardEvent keyboardEvent ->
             keyboardEventKeyMotion keyboardEvent == Pressed &&
               keysymKeycode (keyboardEventKeysym keyboardEvent) == KeycodeK
           _ -> False
-      eventIsLPress event =
-        case eventPayload event of
+  let eventIsLPress e =
+        case eventPayload e of
           KeyboardEvent keyboardEvent ->
             keyboardEventKeyMotion keyboardEvent == Pressed &&
               keysymKeycode (keyboardEventKeysym keyboardEvent) == KeycodeL
           _ -> False
-      hPressed = eventIsHPress event
-      jPressed = eventIsJPress event
-      kPressed = eventIsKPress event
-      lPressed = eventIsLPress event
-  let dp = 5
-      npx = if hPressed then px-dp else if lPressed then px+dp else px
-      npy = if jPressed then py+dp else if kPressed then py-dp else py
+      hPressed = (kc==0) && eventIsHPress event
+      jPressed = (kc==0) && eventIsJPress event
+      kPressed = (kc==0) && eventIsKPress event
+      lPressed = (kc==0) && eventIsLPress event
+  let dp = 16 
+  let npx 
+        | hPressed = px-dp
+        | lPressed = px+dp
+        | otherwise = px
+  let npy
+        | jPressed = py+dp
+        | kPressed = py-dp
+        | otherwise = py
       st' = st{pos=V2 npx npy}
   writeIORef state st'
 
@@ -104,18 +115,23 @@ inputEvent state event = do
 moveChara :: IORef State -> Renderer -> [Texture] -> TimerCallback
 moveChara state re te i = do
   st <- readIORef state
-  let (V2 px py) = pos st
+  let ps = pos st
+  let kc = kec st
   rendererDrawColor re $= V4 182 100 255 255
   clear re
   rendererDrawColor re $= V4 0 0 0 255
   drawPoint re (P (V2 100 100))
   drawLine re (P (V2 50 50)) (P (V2 80 80))
   let rects = map (\(V4 x y w h) -> Rectangle (P (V2 x y)) (V2 w h))
-                                    [V4 30 300 300 50,V4 200 200 100 100,V4 px py 50 50]
+                                    [V4 30 300 300 50,V4 200 200 100 100,V4 400 400 50 50]
   mapM_ (\(s,tex) -> copy re tex Nothing (Just s)) (zip rects te)
   showOneChar re (head te) 40 (V2 50 400) 'f'
-  --copy re (te!!2) Nothing (Just$Rectangle (P ps) (V2 50 50))
+  let chara = if kc> (initKeyEventCount `div` 2) then te!!1 else te!!2
+  copy re chara Nothing (Just$Rectangle (P ps) (V2 50 50))
   present re
+  let nkec = if kc==0 then initKeyEventCount else kc-1
+  let st' = st{kec=nkec}
+  writeIORef state st'
   return (Reschedule i)
 
 showOneChar :: MonadIO m => Renderer -> Texture -> CInt -> V2 CInt -> Char -> m ()
