@@ -1,6 +1,6 @@
 module Main (main) where
 
-import Myapp 
+import MyApp 
 
 main :: IO ()
 main = appMain 

@@ -25,7 +25,12 @@ source-repository head
 
 library
   exposed-modules:
-      Myapp
+      MyApp
+      MyData
+      MyDraw
+      MyEvent
+      MyLoop
+      MyTimer
   other-modules:
       Paths_cookpon
   hs-source-dirs:
