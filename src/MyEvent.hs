@@ -2,17 +2,16 @@ module MyEvent(inputEvent) where
 
 import Data.IORef(IORef,readIORef,writeIORef)
 import SDL.Event (EventPayload(KeyboardEvent),eventPayload,keyboardEventKeyMotion
-                 ,InputMotion(Pressed),keyboardEventKeysym,EventWatchCallback)
+                 ,InputMotion(Pressed,Released),keyboardEventKeysym,EventWatchCallback)
 import SDL.Input.Keyboard (Keysym(keysymKeycode))
 import SDL.Input.Keyboard.Codes
-import SDL.Vect (V2(..))
 import MyData (State(..))
 
 inputEvent :: IORef State -> EventWatchCallback
 inputEvent state event = do
   st <- readIORef state
   let kc = kec st
-  let (V2 px py) = pos st
+  let dr = dir st
   let eventIsHPress e =
         case eventPayload e of
           KeyboardEvent keyboardEvent ->
@@ -37,19 +36,45 @@ inputEvent state event = do
             keyboardEventKeyMotion keyboardEvent == Pressed &&
               keysymKeycode (keyboardEventKeysym keyboardEvent) == KeycodeL
           _ -> False
-      hPressed = (kc==0) && eventIsHPress event
-      jPressed = (kc==0) && eventIsJPress event
-      kPressed = (kc==0) && eventIsKPress event
-      lPressed = (kc==0) && eventIsLPress event
-  let dp = 16 
-  let npx 
-        | hPressed = px-dp
-        | lPressed = px+dp
-        | otherwise = px
-  let npy
-        | jPressed = py+dp
-        | kPressed = py-dp
-        | otherwise = py
-      st' = st{pos=V2 npx npy}
+  let eventIsHRelease e =
+        case eventPayload e of
+          KeyboardEvent keyboardEvent ->
+            keyboardEventKeyMotion keyboardEvent == Released &&
+              keysymKeycode (keyboardEventKeysym keyboardEvent) == KeycodeH
+          _ -> False
+  let eventIsJRelease e =
+        case eventPayload e of
+          KeyboardEvent keyboardEvent ->
+            keyboardEventKeyMotion keyboardEvent == Released &&
+              keysymKeycode (keyboardEventKeysym keyboardEvent) == KeycodeJ
+          _ -> False
+  let eventIsKRelease e =
+        case eventPayload e of
+          KeyboardEvent keyboardEvent ->
+            keyboardEventKeyMotion keyboardEvent == Released &&
+              keysymKeycode (keyboardEventKeysym keyboardEvent) == KeycodeK
+          _ -> False
+  let eventIsLRelease e =
+        case eventPayload e of
+          KeyboardEvent keyboardEvent ->
+            keyboardEventKeyMotion keyboardEvent == Released &&
+              keysymKeycode (keyboardEventKeysym keyboardEvent) == KeycodeL
+          _ -> False
+      hPressed = eventIsHPress event
+      jPressed = eventIsJPress event
+      kPressed = eventIsKPress event
+      lPressed = eventIsLPress event
+      hReleased = eventIsHRelease event
+      jReleased = eventIsJRelease event
+      kReleased = eventIsKRelease event
+      lReleased = eventIsLRelease event
+  let ndr
+        | hPressed = 3
+        | lPressed = 7
+        | jPressed = 1
+        | kPressed = 9
+        | hReleased || jReleased || kReleased || lReleased = 0
+        | otherwise = dr
+      st' = st{dir=ndr}
   writeIORef state st'
 
