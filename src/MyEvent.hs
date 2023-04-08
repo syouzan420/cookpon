@@ -7,7 +7,7 @@ import SDL.Input.Keyboard (Keysym(keysymKeycode))
 import SDL.Input.Keyboard.Codes
 import MyData (State(..))
 
-inputEvent :: IORef State -> EventWatchCallback
+inputEvent :: IORef State -> EventWatchCallback 
 inputEvent state event = do
   st <- readIORef state
   let kc = kec st
@@ -69,11 +69,11 @@ inputEvent state event = do
       kReleased = eventIsKRelease event
       lReleased = eventIsLRelease event
   let ndr
+        | hReleased || jReleased || kReleased || lReleased = 0
         | hPressed = 3
         | lPressed = 7
         | jPressed = 1
         | kPressed = 9
-        | hReleased || jReleased || kReleased || lReleased = 0
         | otherwise = dr
       st' = st{dir=ndr}
   writeIORef state st'

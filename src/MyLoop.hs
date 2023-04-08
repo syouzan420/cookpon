@@ -7,7 +7,7 @@ import SDL.Input.Keyboard (Keysym(keysymKeycode))
 import SDL.Input.Keyboard.Codes
 
 appLoop :: IO ()
-appLoop = do
+appLoop = do 
   events <- pollEvents
   let eventIsQPress e =
         case eventPayload e of

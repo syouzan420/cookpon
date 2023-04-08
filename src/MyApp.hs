@@ -9,8 +9,8 @@ import SDL.Video (createWindow,defaultWindow,windowInitialSize,destroyWindow
                  ,createRenderer,defaultRenderer)
 import SDL.Event (addEventWatch,delEventWatch)
 import SDL.Video.Renderer (createTextureFromSurface,present,freeSurface)
-import Data.IORef(newIORef)
 import SDL.Vect (V2(..),V4(..))
+import Data.IORef(newIORef)
 import MyData (fontSize,hiragana,initState)
 import MyTimer (mainTimer)
 import MyEvent (inputEvent)
@@ -39,9 +39,10 @@ appMain = do
   state <- newIORef initState
   initDraw renderer
   present renderer
-  tm <- addTimer 50 (mainTimer state renderer ftexs itexs)
+  tm <- addTimer 60 (mainTimer state renderer ftexs itexs)
   ev <- addEventWatch (inputEvent state)
   appLoop
   delEventWatch ev
   _ <- removeTimer tm
   destroyWindow window
+
