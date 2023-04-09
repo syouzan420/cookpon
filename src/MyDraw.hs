@@ -1,8 +1,8 @@
-module MyDraw(initDraw,charaDraw) where
+module MyDraw(initDraw,charaDraw,textDraw) where
 
 
 import SDL.Video (Renderer,Texture)
-import SDL.Video.Renderer (rendererDrawColor,clear,drawPoint,drawLine,copy,Rectangle(..))
+import SDL.Video.Renderer (rendererDrawColor,clear,copy,Rectangle(..))
 import SDL (($=))
 import SDL.Vect (Point(P),V2(..),V4(..))
 import Control.Monad.IO.Class (MonadIO)
@@ -10,7 +10,8 @@ import qualified Data.Text as T
 import Foreign.C.Types (CInt)
 import Data.List (elemIndex)
 import Data.Maybe (fromMaybe)
-import MyData(Fchr(..),Pos,initKeyEventCount,initCharaAnimeCount,charaSize,hiragana,fontSize)
+import MyData(Fchr(..),Pos,initCharaAnimeCount,charaSize,hiragana,fontSize,letterSize
+             ,initTextPosition,verticalLetterGap,horizontalLetterGap,textLimitBelow)
 
 initDraw :: Renderer -> IO ()
 initDraw re = do
@@ -33,6 +34,29 @@ charaDraw :: Renderer -> [Texture] -> Pos -> CInt -> IO ()
 charaDraw re itexs ps ca = do
   let chara = if ca>(initCharaAnimeCount `div` 2) then head itexs else itexs!!1
   copy re chara Nothing (Just$Rectangle (P ps) (V2 charaSize charaSize))
+
+textDraw :: Renderer -> [Texture] -> Fchr -> T.Text -> Int -> IO ()
+textDraw re ftexs ft txt lc = do
+  let fontIndex = case ft of Ro -> 0; Hi -> 1; Os -> 2
+  showChars re (ftexs!!fontIndex) ft letterSize txt initTextPosition (lc+1) 0
+
+showChars :: Renderer -> Texture -> Fchr -> CInt -> T.Text -> Pos -> Int -> Int -> IO ()
+showChars r t fc s txt p lc i = do
+  if lc==i then return () else do
+    let ch = T.index txt i
+    let np = nextTextPos ch p
+    if ch=='\n' then return () else showOneChar r t fc s p ch
+    showChars r t fc s txt np lc (i+1)
+
+nextTextPos :: Char -> Pos -> Pos
+nextTextPos ch (V2 px py) =
+  let dx = letterSize + verticalLetterGap
+      dy = letterSize + horizontalLetterGap
+      V2 _ textLimitUpper = initTextPosition
+      npy = if ch=='\n' then textLimitUpper else py + dy
+      npy' = if npy > textLimitBelow then textLimitUpper else npy
+      npx = if npy > textLimitBelow || ch=='\n' then px - dx else px
+   in V2 npx npy'
 
 showOneChar :: MonadIO m => Renderer -> Texture -> Fchr -> CInt -> Pos -> Char -> m ()
 showOneChar r t fc s p ch =
