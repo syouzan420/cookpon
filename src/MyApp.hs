@@ -3,6 +3,7 @@ module MyApp(appMain) where
 
 import SDL.Init (initializeAll)
 import SDL.Image (load)
+import qualified SDL.Mixer as M
 import SDL.Time (addTimer,removeTimer)
 import qualified SDL.Font as F
 import SDL.Video (createWindow,defaultWindow,windowInitialSize,destroyWindow
@@ -41,7 +42,9 @@ appMain = do
   present renderer
   tm <- addTimer 30 (mainTimer state renderer ftexs itexs)
   ev <- addEventWatch (inputEvent state)
-  appLoop
+  M.withAudio M.defaultAudio 1024 $ do
+    M.load "music/test.mp3" >>= M.playMusic M.Forever
+    appLoop
   delEventWatch ev
   _ <- removeTimer tm
   destroyWindow window
