@@ -18,7 +18,7 @@ data State = State{pos :: Pos, kec :: CInt, cac :: CInt, dir :: CInt
 data Fchr = Ro | Hi | Os deriving Eq -- Roman, Hiragana, oshite
 
 initState :: State
-initState = State{pos=V2 100 100, kec=0, cac=10, dir=0 
+initState = State{pos=V2 70 70, kec=0, cac=10, dir=0 
                  ,txt=testText, lec=0, tec=3}                   
 
 initKeyEventCount :: CInt

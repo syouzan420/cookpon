@@ -1,15 +1,16 @@
 module MyEvent(inputEvent) where
 
-import Data.IORef(IORef,readIORef,writeIORef)
+import SDL (get,($=))
 import SDL.Event (EventPayload(KeyboardEvent),eventPayload,keyboardEventKeyMotion
                  ,InputMotion(Pressed),keyboardEventKeysym,EventWatchCallback)
 import SDL.Input.Keyboard (Keysym(keysymKeycode))
 import SDL.Input.Keyboard.Codes
+import Data.IORef(IORef)
 import MyData (State(..),initKeyEventCount)
 
 inputEvent :: IORef State -> EventWatchCallback 
 inputEvent state event = do
-  st <- readIORef state
+  st <- get state
   let kc = kec st
   let dr = dir st
   let eventIsHPress e =
@@ -79,5 +80,5 @@ inputEvent state event = do
         | otherwise = dr
   let nkec = if kc==0 then initKeyEventCount else kc
       st' = st{kec=nkec,dir=ndr}
-  writeIORef state st'
+  state $= st'
 
