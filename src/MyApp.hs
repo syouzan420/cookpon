@@ -30,8 +30,8 @@ appMain = do
   fontS2 <- F.blended font2 (V4 255 255 255 255) hiragana
   fontS3 <- F.blended font3 (V4 255 255 255 255) hiragana
   mapM_ F.free [font1,font2,font3]
-  image <- load "images/cook5.png"
-  image2 <- load "images/cook6.png"
+  image <- load "images/takapon1.png"
+  image2 <- load "images/takapon2.png"
   window <- createWindow "COOKPON" myWindow
   renderer <- createRenderer window (-1) defaultRenderer
   ftexs <- mapM (createTextureFromSurface renderer) [fontS1,fontS2,fontS3]
@@ -42,7 +42,7 @@ appMain = do
   present renderer
   tm <- addTimer 30 (mainTimer state renderer ftexs itexs)
   ev <- addEventWatch (inputEvent state)
-  M.withAudio M.defaultAudio 1024 $ do
+  M.withAudio M.defaultAudio 4096 $ do
     M.load "music/test.mp3" >>= M.playMusic M.Forever
     appLoop
   delEventWatch ev
