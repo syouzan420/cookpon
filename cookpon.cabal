@@ -29,6 +29,8 @@ library
       MyData
       MyDraw
       MyEvent
+      MyFile
+      MyLoad
       MyLoop
       MyTimer
   other-modules:
@@ -39,6 +41,7 @@ library
   build-depends:
       StateVar
     , base >=4.7 && <5
+    , bytestring
     , sdl2
     , sdl2-image
     , sdl2-mixer
@@ -56,6 +59,7 @@ executable cookpon-exe
   build-depends:
       StateVar
     , base >=4.7 && <5
+    , bytestring
     , cookpon
     , sdl2
     , sdl2-image
@@ -75,6 +79,7 @@ test-suite cookpon-test
   build-depends:
       StateVar
     , base >=4.7 && <5
+    , bytestring
     , cookpon
     , sdl2
     , sdl2-image

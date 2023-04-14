@@ -33,6 +33,7 @@ dependencies:
 - sdl2-mixer
 - text
 - StateVar
+- bytestring
 
 ghc-options:
 - -Wall

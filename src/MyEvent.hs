@@ -2,10 +2,11 @@ module MyEvent(inputEvent) where
 
 import SDL (get,($=))
 import SDL.Event (EventPayload(KeyboardEvent),eventPayload,keyboardEventKeyMotion
-                 ,InputMotion(Pressed),keyboardEventKeysym,EventWatchCallback)
+                 ,InputMotion(Pressed,Released),keyboardEventKeysym,EventWatchCallback)
 import SDL.Input.Keyboard (Keysym(keysymKeycode))
 import SDL.Input.Keyboard.Codes
 import Data.IORef(IORef)
+import qualified Data.Text as T
 import MyData (State(..),initKeyEventCount)
 
 inputEvent :: IORef State -> EventWatchCallback 
@@ -13,6 +14,11 @@ inputEvent state event = do
   st <- get state
   let kc = kec st
   let dr = dir st
+  let tx = txt st
+  let lc = lec st
+  let ti = txi st
+  let len = length tx
+  let tlen = T.length (tx!!ti)
   let eventIsHPress e =
         case eventPayload e of
           KeyboardEvent keyboardEvent ->
@@ -37,7 +43,7 @@ inputEvent state event = do
             keyboardEventKeyMotion keyboardEvent == Pressed &&
               keysymKeycode (keyboardEventKeysym keyboardEvent) == KeycodeL
           _ -> False
-{--
+
   let eventIsHRelease e =
         case eventPayload e of
           KeyboardEvent keyboardEvent ->
@@ -62,23 +68,30 @@ inputEvent state event = do
             keyboardEventKeyMotion keyboardEvent == Released &&
               keysymKeycode (keyboardEventKeysym keyboardEvent) == KeycodeL
           _ -> False
+  let eventIsSpaceRelease e =
+        case eventPayload e of
+          KeyboardEvent keyboardEvent ->
+            keyboardEventKeyMotion keyboardEvent == Released &&
+              keysymKeycode (keyboardEventKeysym keyboardEvent) == KeycodeSpace
+          _ -> False
       hReleased = eventIsHRelease event
       jReleased = eventIsJRelease event
       kReleased = eventIsKRelease event
       lReleased = eventIsLRelease event
---}
+      spReleased = eventIsSpaceRelease event
+
       hPressed = eventIsHPress event
       jPressed = eventIsJPress event
       kPressed = eventIsKPress event
       lPressed = eventIsLPress event
   let ndr
---        | hReleased || jReleased || kReleased || lReleased = 0
-        | kc==0 && hPressed = 3
-        | kc==0 && lPressed = 7
-        | kc==0 && jPressed = 1
-        | kc==0 && kPressed = 9
+        | kc==0 && (hPressed || hReleased) = 3
+        | kc==0 && (lPressed || lReleased) = 7
+        | kc==0 && (jPressed || jReleased) = 1
+        | kc==0 && (kPressed || kReleased) = 9
         | otherwise = dr
-  let nkec = if kc==0 then initKeyEventCount else kc
-      st' = st{kec=nkec,dir=ndr}
+  let nkec = if kc==0 && ndr/=0 then initKeyEventCount else kc
+  let nti = if spReleased then if tlen==lc+1 && len>ti+1 then ti+1 else ti else ti
+      st' = st{kec=nkec,dir=ndr,txi=nti}
   state $= st'
 

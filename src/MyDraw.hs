@@ -1,4 +1,4 @@
-module MyDraw(initDraw,charaDraw,textDraw) where
+module MyDraw(initDraw,charaDraw,textDraw,textsDraw) where
 
 
 import SDL.Video (Renderer,Texture)
@@ -35,6 +35,15 @@ charaDraw re itexs ps ca = do
   let chara = if ca>(initCharaAnimeCount `div` 2) then head itexs else itexs!!1
   copy re chara Nothing (Just$Rectangle (P ps) (V2 charaSize charaSize))
 
+textsDraw :: Renderer -> [Texture] -> [T.Text] -> Int -> Int -> Int -> IO ()
+textsDraw re texs tx ti lc i = do
+  if ti==i-1 then return () else do
+    let txt = tx!!ti
+    let lc' = if ti==i then lc else T.length txt - 1
+    textDraw re [texs!!ti,texs!!ti] Hi txt lc'
+    textsDraw re texs tx ti lc (i+1)
+
+
 textDraw :: Renderer -> [Texture] -> Fchr -> T.Text -> Int -> IO ()
 textDraw re ftexs ft txt lc = do
   let fontIndex = case ft of Ro -> 0; Hi -> 1; Os -> 2
@@ -46,12 +55,13 @@ showChars r t fc s txt p lc i = do
     let ch = T.index txt i
     let np = nextTextPos ch p
     if ch=='\n' then return () else showOneChar r t fc s p ch
+    --if ch=='\n' then return () else showOneIndexChar r t s p i 
     showChars r t fc s txt np lc (i+1)
 
 nextTextPos :: Char -> Pos -> Pos
 nextTextPos ch (V2 px py) =
-  let dx = letterSize + verticalLetterGap
-      dy = letterSize + horizontalLetterGap
+  let dx = letterSize + horizontalLetterGap
+      dy = letterSize + verticalLetterGap
       V2 _ textLimitUpper = initTextPosition
       npy = if ch=='\n' then textLimitUpper else py + dy
       npy' = if npy > textLimitBelow then textLimitUpper else npy
@@ -70,3 +80,8 @@ showOneChar r t fc s p ch =
    in copy r t (Just (Rectangle (P (V2 (fromIntegral index*dx) 0)) (V2 dx dy)))
                (Just (Rectangle (P p) (V2 s s)))
 
+showOneIndexChar :: MonadIO m => Renderer -> Texture -> CInt -> Pos -> Int -> m ()
+showOneIndexChar r t s p i =
+  let wds = fromIntegral fontSize
+   in copy r t (Just (Rectangle (P (V2 (fromIntegral i*wds) 0)) (V2 wds wds)))
+               (Just (Rectangle (P p) (V2 s s)))
