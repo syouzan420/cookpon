@@ -40,7 +40,7 @@ appMain = do
   tm <- addTimer 30 (mainTimer state renderer ftexs itexs)
   ev <- addEventWatch (inputEvent state)
   M.withAudio M.defaultAudio 1024 $ do
-    M.load "music/cooktest1.mp3" >>= M.playMusic M.Forever
+    M.load "music/cooktest2.mp3" >>= M.playMusic M.Forever
     appLoop
   delEventWatch ev
   _ <- removeTimer tm
