@@ -10,9 +10,8 @@ import SDL.Video (createWindow,defaultWindow,windowInitialSize,destroyWindow
                  ,createRenderer,defaultRenderer)
 import SDL.Event (addEventWatch,delEventWatch)
 import SDL.Video.Renderer (createTextureFromSurface,present,freeSurface)
-import SDL.Vect (V2(..))
 import Data.IORef(newIORef)
-import MyData (fontSize,initState)
+import MyData (fontSize,initState,fontFiles,imageFiles,textFiles,musicFiles,timerInterval,title,windowSize)
 import MyTimer (mainTimer)
 import MyEvent (inputEvent)
 import MyDraw (initDraw)
@@ -23,35 +22,24 @@ appMain :: IO ()
 appMain = do
   initializeAll
   F.initialize
--- <<<<<<< HEAD
---  font1 <- F.load "font/monaco.ttf" fontSize 
---  font2 <- F.load "font/marugo.TTC" fontSize 
---  font3 <- F.load "font/oshide.otf" fontSize 
---  fontS1 <- F.blended font1 (V4 255 255 255 255) "abcdefghijklmnopqrstuvwxyz" 
---  fontS2 <- F.blended font2 (V4 255 255 255 255) hiragana
---  fontS3 <- F.blended font3 (V4 255 255 255 255) hiragana
---  mapM_ F.free [font1,font2,font3]
---  image <- load "images/takapon1.png"
---  image2 <- load "images/takapon2.png"
--- =======
   I.initialize []
-  fontS <- loadFonts fontSize ["font/monaco.ttf","font/marugo.TTC","font/oshide.otf"]
-  (newState,fontTS) <- loadText fontSize "font/marugo.TTC" "texts/test.txt" initState 
-  imageS <- loadImages ["images/cook5.png","images/cook6.png"]
-  let myWindow = defaultWindow {windowInitialSize =  V2 480 600}
-  window <- createWindow "COOKPON" myWindow
+  fontS <- loadFonts fontSize fontFiles
+  --(newState,fontTS) <- loadText fontSize (fontFiles!!1) (head textFiles) initState 
+  imageS <- loadImages  imageFiles 
+  let myWindow = defaultWindow {windowInitialSize = windowSize}
+  window <- createWindow title myWindow
   renderer <- createRenderer window (-1) defaultRenderer
   ftexs <- mapM (createTextureFromSurface renderer) fontS 
-  ftex2 <- mapM (createTextureFromSurface renderer) fontTS
+  --ftex2 <- mapM (createTextureFromSurface renderer) fontTS
   itexs <- mapM (createTextureFromSurface renderer) imageS
-  mapM_ freeSurface (imageS++fontTS)
+  mapM_ freeSurface (imageS++fontS)
   initDraw renderer
   present renderer
   state <- newIORef initState 
-  tm <- addTimer 30 (mainTimer state renderer ftexs itexs)
+  tm <- addTimer timerInterval (mainTimer state renderer ftexs itexs)
   ev <- addEventWatch (inputEvent state)
   M.withAudio M.defaultAudio 1024 $ do
-    M.load "music/cooktest3.mp3" >>= M.playMusic M.Forever
+    M.load (head musicFiles) >>= M.playMusic M.Forever
     appLoop
   delEventWatch ev
   _ <- removeTimer tm

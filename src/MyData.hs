@@ -1,13 +1,14 @@
 {-# LANGUAGE OverloadedStrings #-}
 module MyData(Pos,State(..),Fchr(..),initState,initKeyEventCount,initCharaAnimeCount
              ,initTextEventCount,initTextPosition,fontSize,letterSize,verticalLetterGap
-             ,horizontalLetterGap,textLimitBelow,charaSize,movePixel,hiragana,testText) where
+             ,horizontalLetterGap,textLimitBelow,charaSize,movePixel,hiragana,testText
+             ,timerInterval,fontFiles,imageFiles,textFiles,musicFiles,title,windowSize) where
 
 import SDL.Vect (V2(..))
 import Foreign.C.Types (CInt)
-import qualified Data.Text as T
 import SDL.Font (PointSize) 
 import qualified Data.Text as T
+import Data.Word (Word32)
 
 type Pos = V2 CInt 
 
@@ -18,9 +19,30 @@ data State = State{pos :: Pos, kec :: CInt, cac :: CInt, dir :: CInt
 
 data Fchr = Ro | Hi | Os deriving Eq -- Roman, Hiragana, oshite
 
+title :: T.Text
+title = "COOKPON"
+
+windowSize :: V2 CInt
+windowSize = V2 480 600
+
 initState :: State
 initState = State{pos=V2 70 70, kec=0, cac=10, dir=0 
                  ,txt=[testText], lec=0, txi=0, tec=3}                   
+
+fontFiles :: [FilePath]
+fontFiles = map ("font/"++) ["monaco.ttf","marugo.TTC","oshide.otf"]
+
+imageFiles :: [FilePath]
+imageFiles = map ("images/"++) ["cook5.png","cook6.png"]
+
+textFiles :: [FilePath]
+textFiles = ["texts/test.txt"]
+
+musicFiles :: [FilePath]
+musicFiles = ["music/cooktest3.mp3"]
+
+timerInterval :: Word32
+timerInterval = 30
 
 initKeyEventCount :: CInt
 initKeyEventCount = charaSize `div` movePixel 
