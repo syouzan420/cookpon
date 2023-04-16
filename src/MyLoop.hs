@@ -17,6 +17,6 @@ appLoop = do
             keysymKeycode (keyboardEventKeysym keyboardEvent) == KeycodeQ
           _ -> False
       qPressed = any eventIsQPress events
-  delay 100
+  delay 50 
   unless qPressed appLoop
 

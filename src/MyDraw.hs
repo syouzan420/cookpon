@@ -1,4 +1,4 @@
-module MyDraw(initDraw,charaDraw,textDraw,textsDraw) where
+module MyDraw(initDraw,charaDraw,textDraw,textsDraw,mapDraw) where
 
 
 import SDL.Video (Renderer,Texture)
@@ -11,7 +11,8 @@ import Foreign.C.Types (CInt)
 import Data.List (elemIndex)
 import Data.Maybe (fromMaybe)
 import MyData(Fchr(..),Pos,initCharaAnimeCount,charaSize,hiragana,fontSize,letterSize
-             ,initTextPosition,verticalLetterGap,horizontalLetterGap,textLimitBelow,textLimitLeft)
+             ,initTextPosition,initGamePosition,verticalLetterGap,horizontalLetterGap
+             ,textLimitBelow,textLimitLeft)
 
 initDraw :: Renderer -> IO ()
 initDraw re = do
@@ -29,6 +30,17 @@ initDraw re = do
 --  showOneChar re (head ftexs) Ro 40 (V2 50 400) 'e'
 --  showOneChar re (ftexs!!1) Hi 40 (V2 100 400) 'は'
 --  showOneChar re (ftexs!!2) Hi 40 (V2 150 400) 'は'
+
+mapDraw :: Renderer -> [Texture] -> [[Int]] -> IO ()
+mapDraw re itexs mps = mapLinesDraw re itexs mps 0
+
+mapLinesDraw :: Renderer -> [Texture] -> [[Int]] -> Int -> IO ()
+mapLinesDraw _ _ [] _ = return ()
+mapLinesDraw re itexs (mp:mps) i = do
+  let position = initGamePosition + (V2 0 charaSize*fromIntegral i)
+  mapM_ (\(c,x)-> copy re (itexs!!c) Nothing 
+      (Just$Rectangle (P (position+V2 (charaSize*fromIntegral x) 0))(V2 charaSize charaSize))) (zip mp [0..])
+  mapLinesDraw re itexs mps (i+1)
 
 charaDraw :: Renderer -> [Texture] -> Pos -> Int -> IO ()
 charaDraw re itexs ps cp = do
