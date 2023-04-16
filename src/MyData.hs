@@ -32,7 +32,7 @@ windowSize :: V2 CInt
 windowSize = V2 480 600
 
 initState :: State
-initState = State{pos=initPlayerPosition, kec=0, cac=10, cpn=0, dir=0 
+initState = State{pos=initPlayerPosition, kec=0, cac=initCharaAnimeCount, cpn=0, dir=0 
                  ,txt=[testText], lec=0, txi=0, tec=3, tsc=0, gmp=testMap}                   
 
 fontFiles :: [FilePath]
@@ -48,16 +48,17 @@ musicFiles :: [FilePath]
 musicFiles = ["music/cooktest3.mp3"]
 
 timerInterval :: Word32
-timerInterval = 50 
+timerInterval = 100
+
 
 initKeyEventCount :: CInt
 initKeyEventCount = charaSize `div` movePixel
 
 initCharaAnimeCount :: CInt
-initCharaAnimeCount = 10
+initCharaAnimeCount = 8 
 
 initTextEventCount :: CInt
-initTextEventCount = 1
+initTextEventCount = 3
 
 initPlayerPosition :: V2 CInt
 initPlayerPosition = V2 70 70
@@ -90,7 +91,7 @@ charaSize :: CInt
 charaSize = 48 
 
 movePixel :: CInt
-movePixel = 6
+movePixel = 4
 
 hiragana :: T.Text
 hiragana = "あかはなまいきひにみうくふぬむえけへねめおこほのもとろそよをてれせゑつるすゆんちりしゐたらさやわがばぎびぐぶげべごぼどぞでぜづずぢじだざぱぴぷぺぽっアカハナマイキヒニミウクフヌムエケヘネメオコホノモトロソヨヲテレセヱツルスユンチリシヰタラサヤワガバギビグブゲベゴボドゾデゼヅズヂジダザパピプペポッ"

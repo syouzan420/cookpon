@@ -1,22 +1,20 @@
 module MyLoop(appLoop) where
 
 import Control.Monad (unless)
-import SDL.Event (EventPayload(KeyboardEvent),pollEvents,eventPayload
-                 ,keyboardEventKeyMotion,InputMotion(Pressed),keyboardEventKeysym)
-import SDL.Input.Keyboard (Keysym(keysymKeycode))
-import SDL.Input.Keyboard.Codes
+import Data.IORef(IORef)
+import SDL(get,($=))
+import SDL.Video.Renderer (Renderer,Texture)
 import SDL.Time(delay)
+import MyAction(mainAction)
+import MyData(State)
+import MyEvent(inputEvent)
 
-appLoop :: IO ()
-appLoop = do 
-  events <- pollEvents
-  let eventIsQPress e =
-        case eventPayload e of
-          KeyboardEvent keyboardEvent ->
-            keyboardEventKeyMotion keyboardEvent == Pressed &&
-            keysymKeycode (keyboardEventKeysym keyboardEvent) == KeycodeQ
-          _ -> False
-      qPressed = any eventIsQPress events
-  delay 50 
-  unless qPressed appLoop
+appLoop :: IORef State -> Renderer -> [Texture] -> [Texture] -> IO ()
+appLoop state re ftexs itexs = do 
+  st <- get state
+  (nst,qPressed) <- inputEvent st
+  nst' <- mainAction nst re ftexs itexs
+  state $= nst'
+  delay 30 
+  unless qPressed (appLoop state re ftexs itexs)
 
