@@ -8,8 +8,7 @@ import qualified Data.Text as T
 import qualified Data.Text.IO as TI
 import SDL.Vect(V4(..))
 import SDL.Video.Renderer(Surface)
---import System.IO(FilePath)
-import MyData(State(..),hiragana)
+import MyData(State(..),Fchr,hiragana)
 import MyFile(fileRead)
 
 loadImages :: [FilePath] -> IO [Surface]
@@ -21,8 +20,9 @@ loadFonts fs files = do
   mapM (\(fnt,tx) -> F.blended fnt (V4 255 255 255 255) tx) 
                    (zip font ["abcdefghijklmnopqrstuvwxyz",hiragana,hiragana])
 
-loadText :: F.PointSize -> FilePath -> FilePath -> State -> IO (State,[Surface])
-loadText fs fontFile textFile st = do
+loadText :: F.PointSize -> Fchr -> [FilePath] -> FilePath -> State -> IO (State,[Surface])
+loadText fs fc fontFiles textFile st = do
+  let fontFile = fontFiles!!fromEnum fc
   font <- F.load fontFile fs
   doc <- fileRead textFile 
   let docl = map changeSpace (T.lines doc)

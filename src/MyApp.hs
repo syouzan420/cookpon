@@ -11,7 +11,8 @@ import SDL.Video (createWindow,defaultWindow,windowInitialSize,destroyWindow
 import SDL.Event (addEventWatch,delEventWatch)
 import SDL.Video.Renderer (createTextureFromSurface,present,freeSurface)
 import Data.IORef(newIORef)
-import MyData (fontSize,initState,fontFiles,imageFiles,textFiles,musicFiles,timerInterval,title,windowSize)
+import MyData (Fchr(..),fontSize,initState,fontFiles,imageFiles,textFiles,musicFiles,timerInterval
+              ,title,windowSize)
 import MyTimer (mainTimer)
 import MyEvent (inputEvent)
 import MyDraw (initDraw)
@@ -23,22 +24,22 @@ appMain = do
   initializeAll
   F.initialize
   I.initialize []
-  fontS <- loadFonts fontSize fontFiles
-  --(newState,fontTS) <- loadText fontSize (fontFiles!!1) (head textFiles) initState 
+  --fontS <- loadFonts fontSize fontFiles
+  (newState,fontTS) <- loadText fontSize Hi fontFiles (head textFiles) initState 
   imageS <- loadImages  imageFiles 
   let myWindow = defaultWindow {windowInitialSize = windowSize}
   window <- createWindow title myWindow
   renderer <- createRenderer window (-1) defaultRenderer
-  ftexs <- mapM (createTextureFromSurface renderer) fontS 
-  --ftex2 <- mapM (createTextureFromSurface renderer) fontTS
+  --ftexs <- mapM (createTextureFromSurface renderer) fontS 
+  ftexs <- mapM (createTextureFromSurface renderer) fontTS
   itexs <- mapM (createTextureFromSurface renderer) imageS
-  mapM_ freeSurface (imageS++fontS)
+  mapM_ freeSurface (imageS++fontTS)
   initDraw renderer
   present renderer
-  state <- newIORef initState 
+  state <- newIORef newState 
   tm <- addTimer timerInterval (mainTimer state renderer ftexs itexs)
   ev <- addEventWatch (inputEvent state)
-  M.withAudio M.defaultAudio 1024 $ do
+  M.withAudio M.defaultAudio 8192 $ do
     M.load (head musicFiles) >>= M.playMusic M.Forever
     appLoop
   delEventWatch ev

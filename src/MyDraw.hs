@@ -11,7 +11,7 @@ import Foreign.C.Types (CInt)
 import Data.List (elemIndex)
 import Data.Maybe (fromMaybe)
 import MyData(Fchr(..),Pos,initCharaAnimeCount,charaSize,hiragana,fontSize,letterSize
-             ,initTextPosition,verticalLetterGap,horizontalLetterGap,textLimitBelow)
+             ,initTextPosition,verticalLetterGap,horizontalLetterGap,textLimitBelow,textLimitLeft)
 
 initDraw :: Renderer -> IO ()
 initDraw re = do
@@ -30,43 +30,46 @@ initDraw re = do
 --  showOneChar re (ftexs!!1) Hi 40 (V2 100 400) 'は'
 --  showOneChar re (ftexs!!2) Hi 40 (V2 150 400) 'は'
 
-charaDraw :: Renderer -> [Texture] -> Pos -> CInt -> IO ()
-charaDraw re itexs ps ca = do
-  let chara = if ca>(initCharaAnimeCount `div` 2) then head itexs else itexs!!1
+charaDraw :: Renderer -> [Texture] -> Pos -> Int -> IO ()
+charaDraw re itexs ps cp = do
+  let chara = itexs!!cp
   copy re chara Nothing (Just$Rectangle (P ps) (V2 charaSize charaSize))
 
-textsDraw :: Renderer -> [Texture] -> [T.Text] -> Int -> Int -> Int -> IO ()
-textsDraw re texs tx ti lc i = do
-  if ti==i-1 then return () else do
-    let txt = tx!!ti
+textsDraw :: Renderer -> [Texture] -> Pos -> CInt -> [T.Text] -> Int -> Int -> Int -> IO CInt 
+textsDraw re texs ps sc tx ti lc i = do
+  if ti==i-1 then return sc else do
+    let txt = tx!!i
     let lc' = if ti==i then lc else T.length txt - 1
-    textDraw re [texs!!ti,texs!!ti] Hi txt lc'
-    textsDraw re texs tx ti lc (i+1)
+    (nps,nsc) <- textDraw re [texs!!i,texs!!i,texs!!i] ps sc Hi txt lc'
+    let (nps',nsc') = nextTextPos '\n' nps nsc 
+    textsDraw re texs nps' nsc' tx ti lc (i+1)
 
 
-textDraw :: Renderer -> [Texture] -> Fchr -> T.Text -> Int -> IO ()
-textDraw re ftexs ft txt lc = do
-  let fontIndex = case ft of Ro -> 0; Hi -> 1; Os -> 2
-  showChars re (ftexs!!fontIndex) ft letterSize txt initTextPosition (lc+1) 0
+textDraw :: Renderer -> [Texture] -> Pos -> CInt -> Fchr -> T.Text -> Int -> IO (Pos,CInt)
+textDraw re ftexs ps sc fc txt lc = do
+  let fontIndex = case fc of Ro -> 0; Hi -> 1; Os -> 2
+  showChars re (ftexs!!fontIndex) fc letterSize txt ps sc (lc+1) 0
 
-showChars :: Renderer -> Texture -> Fchr -> CInt -> T.Text -> Pos -> Int -> Int -> IO ()
-showChars r t fc s txt p lc i = do
-  if lc==i then return () else do
+showChars :: Renderer -> Texture -> Fchr -> CInt -> T.Text -> Pos -> CInt -> Int -> Int -> IO (Pos,CInt) 
+showChars r t fc s txt p sc lc i = do
+  if lc==i then return (p,sc) else do
     let ch = T.index txt i
-    let np = nextTextPos ch p
-    if ch=='\n' then return () else showOneChar r t fc s p ch
-    --if ch=='\n' then return () else showOneIndexChar r t s p i 
-    showChars r t fc s txt np lc (i+1)
+    let (np,ns) = nextTextPos ch p sc
+--    if ch=='\n' then return () else showOneChar r t fc s p ch
+    if ch=='\n' then return () else showOneIndexChar r t s p i 
+    showChars r t fc s txt np ns lc (i+1)
 
-nextTextPos :: Char -> Pos -> Pos
-nextTextPos ch (V2 px py) =
+nextTextPos :: Char -> Pos -> CInt -> (Pos,CInt)
+nextTextPos ch (V2 px py) sc =
   let dx = letterSize + horizontalLetterGap
       dy = letterSize + verticalLetterGap
       V2 _ textLimitUpper = initTextPosition
       npy = if ch=='\n' then textLimitUpper else py + dy
       npy' = if npy > textLimitBelow then textLimitUpper else npy
       npx = if npy > textLimitBelow || ch=='\n' then px - dx else px
-   in V2 npx npy'
+      npx' = if npx < textLimitLeft then npx + dx else npx
+      nsc = if npx < textLimitLeft then sc + dx else sc
+   in (V2 npx npy',nsc)
 
 showOneChar :: MonadIO m => Renderer -> Texture -> Fchr -> CInt -> Pos -> Char -> m ()
 showOneChar r t fc s p ch =

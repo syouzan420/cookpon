@@ -91,7 +91,9 @@ inputEvent state event = do
         | kc==0 && (kPressed || kReleased) = 9
         | otherwise = dr
   let nkec = if kc==0 && ndr/=0 then initKeyEventCount else kc
-  let nti = if spReleased then if tlen==lc+1 && len>ti+1 then ti+1 else ti else ti
-      st' = st{kec=nkec,dir=ndr,txi=nti}
+  let bNewLine = spReleased && (tlen==lc+1 && len-1>ti)
+  let nti = if bNewLine then ti+1 else ti 
+      nlec = if bNewLine then 0 else lc
+      st' = st{kec=nkec,dir=ndr,lec=nlec,txi=nti}
   state $= st'
 
