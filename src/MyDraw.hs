@@ -2,7 +2,7 @@ module MyDraw(initDraw,charaDraw,textDraw,textsDraw,mapDraw) where
 
 
 import SDL.Video (Renderer,Texture)
-import SDL.Video.Renderer (rendererDrawColor,clear,copy,Rectangle(..))
+import SDL.Video.Renderer (rendererDrawColor,clear,copy,copyEx,Rectangle(..),textureAlphaMod)
 import SDL (($=))
 import SDL.Vect (Point(P),V2(..),V4(..))
 import Control.Monad.IO.Class (MonadIO)
@@ -12,7 +12,7 @@ import Data.List (elemIndex)
 import Data.Maybe (fromMaybe)
 import MyData(Fchr(..),Pos,initCharaAnimeCount,charaSize,hiragana,fontSize,letterSize
              ,initTextPosition,initGamePosition,verticalLetterGap,horizontalLetterGap
-             ,textLimitBelow,textLimitLeft)
+             ,textLimitBelow,textLimitLeft,hideAlpha)
 
 initDraw :: Renderer -> IO ()
 initDraw re = do
@@ -31,8 +31,10 @@ initDraw re = do
 --  showOneChar re (ftexs!!1) Hi 40 (V2 100 400) 'は'
 --  showOneChar re (ftexs!!2) Hi 40 (V2 150 400) 'は'
 
-mapDraw :: Renderer -> [Texture] -> [[Int]] -> IO ()
-mapDraw re itexs mps = mapLinesDraw re itexs mps 0
+mapDraw :: Renderer -> [Texture] -> [[Int]] -> Bool -> IO ()
+mapDraw re itexs mps it = do 
+  mapM_ (\t -> textureAlphaMod t $= if it then hideAlpha else 255) itexs
+  mapLinesDraw re itexs mps 0
 
 mapLinesDraw :: Renderer -> [Texture] -> [[Int]] -> Int -> IO ()
 mapLinesDraw _ _ [] _ = return ()
@@ -42,9 +44,10 @@ mapLinesDraw re itexs (mp:mps) i = do
       (Just$Rectangle (P (position+V2 (charaSize*fromIntegral x) 0))(V2 charaSize charaSize))) (zip mp [0..])
   mapLinesDraw re itexs mps (i+1)
 
-charaDraw :: Renderer -> [Texture] -> Pos -> Int -> IO ()
-charaDraw re itexs ps cp = do
+charaDraw :: Renderer -> [Texture] -> Pos -> Int -> Bool -> IO ()
+charaDraw re itexs ps cp it = do
   let chara = itexs!!cp
+  textureAlphaMod chara $= if it then hideAlpha else 255
   copy re chara Nothing (Just$Rectangle (P ps) (V2 charaSize charaSize))
 
 textsDraw :: Renderer -> [Texture] -> Pos -> CInt -> [T.Text] -> Int -> Int -> Int -> IO CInt 
@@ -68,7 +71,7 @@ showChars r t fc s txt p sc lc i = do
     let ch = T.index txt i
     let (np,ns) = nextTextPos ch p sc
 --    if ch=='\n' then return () else showOneChar r t fc s p ch
-    if ch=='\n' then return () else showOneIndexChar r t s p i 
+    if ch=='\n' then return () else showOneIndexChar r t s p ch i 
     showChars r t fc s txt np ns lc (i+1)
 
 nextTextPos :: Char -> Pos -> CInt -> (Pos,CInt)
@@ -95,8 +98,12 @@ showOneChar r t fc s p ch =
    in copy r t (Just (Rectangle (P (V2 (fromIntegral index*dx) 0)) (V2 dx dy)))
                (Just (Rectangle (P p) (V2 s s)))
 
-showOneIndexChar :: MonadIO m => Renderer -> Texture -> CInt -> Pos -> Int -> m ()
-showOneIndexChar r t s p i =
+showOneIndexChar :: MonadIO m => Renderer -> Texture -> CInt -> Pos -> Char -> Int -> m ()
+showOneIndexChar r t s p ch i =
   let wds = fromIntegral fontSize
-   in copy r t (Just (Rectangle (P (V2 (fromIntegral i*wds) 0)) (V2 wds wds)))
-               (Just (Rectangle (P p) (V2 s s)))
+      irt = ch=='」' || ch=='「' 
+      rectSrc = Just (Rectangle (P (V2 (fromIntegral i*wds) 0)) (V2 wds wds))
+      rectDst = Just (Rectangle (P p) (V2 s s))
+      rotate = 90
+   in if irt then copyEx r t rectSrc rectDst rotate Nothing (V2 False False)
+             else copy r t rectSrc rectDst

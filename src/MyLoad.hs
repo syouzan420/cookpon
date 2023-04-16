@@ -4,9 +4,8 @@ module MyLoad(loadImages,loadText) where
 import qualified SDL.Image as I 
 import qualified SDL.Font as F
 import qualified Data.Text as T
-import SDL.Vect(V4(..))
 import SDL.Video.Renderer(Surface)
-import MyData(State(..),Fchr)
+import MyData(State(..),Fchr,fontColor)
 import MyFile(fileRead)
 
 loadImages :: [FilePath] -> IO [Surface]
@@ -26,7 +25,7 @@ loadText fs fc fontFiles textFile st = do
   font <- F.load fontFile fs
   doc <- fileRead textFile 
   let docl = map changeSpace (T.lines doc)
-  docfonts <- mapM (F.blended font (V4 255 255 255 255)) docl 
+  docfonts <- mapM (F.blended font fontColor) docl 
   F.free font
   let nst = st{txt=docl}
   return (nst,docfonts)

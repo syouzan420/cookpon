@@ -16,6 +16,7 @@ inputEvent st = do
   let kc = kec st
   let dr = dir st
   let tx = txt st
+  let it = itx st
   let lc = lec st
   let ti = txi st
   let len = length tx
@@ -109,9 +110,13 @@ inputEvent st = do
         | kc==0 = 0
         | otherwise = dr
   let nkec = if kc==0 && ndr/=0 then initKeyEventCount else kc
-  let bNewLine = spReleased && (tlen==lc+1 && len-1>ti)
+  let bNewLine = it && spReleased && (tlen==lc+1 && len-1>ti)
+  let nit 
+        | not it && spReleased = True
+        | it && len-1==ti && spReleased = False
+        | otherwise = it
   let nti = if bNewLine then ti+1 else ti 
       nlec = if bNewLine then 0 else lc
-      st' = st{kec=nkec,dir=ndr,lec=nlec,txi=nti}
+      st' = st{kec=nkec,dir=ndr,itx=nit,lec=nlec,txi=nti}
   return (st',qPressed)
 
