@@ -35,3 +35,4 @@ appMain = do
     appLoop state renderer ftexs itexs
   destroyWindow window
 
+----
