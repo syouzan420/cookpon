@@ -15,6 +15,6 @@ appLoop state re ftexs itexs = do
   (nst,qPressed) <- inputEvent st
   nst' <- mainAction nst re ftexs itexs
   state $= nst'
-  delay 30 
+  delay 100 
   unless qPressed (appLoop state re ftexs itexs)
 

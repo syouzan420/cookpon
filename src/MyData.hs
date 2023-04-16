@@ -55,7 +55,7 @@ initCharaAnimeCount :: CInt
 initCharaAnimeCount = 8 
 
 initTextEventCount :: CInt
-initTextEventCount = 3
+initTextEventCount = 0
 
 initPlayerPosition :: V2 CInt
 initPlayerPosition = V2 70 70
@@ -94,7 +94,7 @@ charaSize :: CInt
 charaSize = 48 
 
 movePixel :: CInt
-movePixel = 4
+movePixel = 8
 
 hiragana :: T.Text
 hiragana = "あかはなまいきひにみうくふぬむえけへねめおこほのもとろそよをてれせゑつるすゆんちりしゐたらさやわがばぎびぐぶげべごぼどぞでぜづずぢじだざぱぴぷぺぽっアカハナマイキヒニミウクフヌムエケヘネメオコホノモトロソヨヲテレセヱツルスユンチリシヰタラサヤワガバギビグブゲベゴボドゾデゼヅズヂジダザパピプペポッ"
