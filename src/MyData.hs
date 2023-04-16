@@ -45,7 +45,7 @@ musicFiles :: [FilePath]
 musicFiles = ["music/cooktest3.mp3"]
 
 timerInterval :: Word32
-timerInterval = 100 
+timerInterval = 50 
 
 initKeyEventCount :: CInt
 initKeyEventCount = charaSize `div` movePixel 

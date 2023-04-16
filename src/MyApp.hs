@@ -39,7 +39,7 @@ appMain = do
   state <- newIORef newState 
   tm <- addTimer timerInterval (mainTimer state renderer ftexs itexs)
   ev <- addEventWatch (inputEvent state)
-  M.withAudio M.defaultAudio 8192 $ do
+  M.withAudio M.defaultAudio 1024 $ do
     M.load (head musicFiles) >>= M.playMusic M.Forever
     appLoop
   delEventWatch ev

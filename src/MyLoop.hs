@@ -5,6 +5,7 @@ import SDL.Event (EventPayload(KeyboardEvent),pollEvents,eventPayload
                  ,keyboardEventKeyMotion,InputMotion(Pressed),keyboardEventKeysym)
 import SDL.Input.Keyboard (Keysym(keysymKeycode))
 import SDL.Input.Keyboard.Codes
+import SDL.Time(delay)
 
 appLoop :: IO ()
 appLoop = do 
@@ -16,5 +17,6 @@ appLoop = do
             keysymKeycode (keyboardEventKeysym keyboardEvent) == KeycodeQ
           _ -> False
       qPressed = any eventIsQPress events
+  delay 100
   unless qPressed appLoop
 
