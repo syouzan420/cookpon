@@ -1,0 +1,18 @@
+1024 80 --2'10'' 1553*80 Illegal Audio-MPEG-Header 0xc14b0142 at offset 753833
+1024 60          1300*60 Illegal Audio-MPEG-Header 0x00000006 at offset 253.
+1024 60 --1'22'' 1297*60 Illegal Audio-MPEG-Header 0x00000046 at offset 253.
+                 2086*60 [src/libmpg123/layer3.c:INT123_do_layer3():1841] error: dequantization failed!
+                         Illegal Audio-MPEG-Header 0x00000052 at offset 819453.
+1024 100         1420*100 Illegal Audio-MPEG-Header 0xff00e042 at offset 1035119.
+2048 100         2081*100
+1024 100 openAudio 1424*100
+                   2056*100
+                   1596*100
+sudo apt-get install ubuntu-restricted-extras
+4096 100          2224*100
+512 100           2055*100
+512 50            2486*50
+256 50            2459*50
+
+
+

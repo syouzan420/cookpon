@@ -9,7 +9,7 @@ import MyDraw (initDraw,charaDraw,textsDraw,mapDraw)
 
 mainAction :: State -> Renderer -> [Texture] -> [Texture] -> IO State 
 mainAction st re ftexs itexs = do
-  let State (V2 px py) kc ca cp dr tx it lc ti tc ts mp = st 
+  let State (V2 px py) kc ca cp dr tx it lc ti tc ts mp tm = st 
   let startTextPosition = initTextPosition + V2 ts 0
   let dp = movePixel 
   let ndr = if kc==0 then 0 else dr
@@ -26,5 +26,5 @@ mainAction st re ftexs itexs = do
   charaDraw re (take 2 itexs) (V2 npx npy) ncp it 
   nts <- if it then textsDraw re ftexs startTextPosition ts tx ti lc 0 else return ts
   present re
-  let nst = State (V2 npx npy) nkec ncac ncp ndr tx it nlc ti ntc nts mp
+  let nst = State (V2 npx npy) nkec ncac ncp ndr tx it nlc ti ntc nts mp tm
   return nst 

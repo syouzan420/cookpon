@@ -30,9 +30,14 @@ appMain = do
   initDraw renderer
   present renderer
   state <- newIORef newState 
-  M.withAudio M.defaultAudio 1024 $ do
+  M.withAudio M.defaultAudio 256 $ do
     M.load (head musicFiles) >>= M.playMusic M.Forever
+    cd <- M.chunkDecoders
+    md <- M.musicDecoders
+    print cd
+    print md
     appLoop state renderer ftexs itexs
   destroyWindow window
 
-----
+myAudio :: M.Audio
+myAudio = M.Audio 11025 M.FormatS16_Sys M.Stereo
