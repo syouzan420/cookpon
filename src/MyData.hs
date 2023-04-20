@@ -4,7 +4,7 @@ module MyData(Pos,State(..),Fchr(..),initState,initKeyEventCount,initCharaAnimeC
              ,fontSize,fontColor,hideAlpha,letterSize
              ,verticalLetterGap,horizontalLetterGap,textLimitBelow,textLimitLeft,charaSize
              ,movePixel,fontFiles,imageFiles,textFiles
-             ,musicFiles,title,windowSize,testMap,delayTime) where
+             ,musicFiles,title,windowSize,delayTime) where
 
 import Linear.V2 (V2(..))
 import Linear.V4 (V4(..))
@@ -14,11 +14,10 @@ import qualified Data.Text as T
 import Data.Word (Word8,Word32)
 
 type Pos = V2 CInt 
-type Gmap = [[Int]]
 
 data State = State{pos :: Pos, kec :: CInt, cac :: CInt, cpn :: Int, dir :: CInt
                   ,txt :: [T.Text], itx :: Bool, lec :: Int, txi :: Int, tec :: CInt, tsc :: CInt
-                  , gmp :: Gmap, tim :: Integer}
+                  , gmp :: [[Int]], tim :: Integer}
 -- pos: Position , kec: KeyEventCount
 -- cac: CharaAnimeCount, cpn: CharaPictureNumber
 -- dir: Direction

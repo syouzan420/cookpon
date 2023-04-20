@@ -28,6 +28,7 @@ library
       MyAction
       MyApp
       MyData
+      MyDataJ
       MyEvent
       MyFile
       MySDL.MyAudio

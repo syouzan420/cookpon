@@ -7,8 +7,11 @@ myAudio :: IO ()
 myAudio = do
   M.openAudio M.defaultAudio 256
   M.load (head musicFiles) >>= M.playMusic M.Forever
+  au <- M.queryAudio
   cd <- M.chunkDecoders
   md <- M.musicDecoders
+  print M.defaultAudio
+  print au
   print cd
   print md
 
