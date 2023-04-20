@@ -14,7 +14,7 @@ appMain = do
   (newState,fontS,imageS) <- myLoad
   (window,renderer,ftexs,itexs) <- myInitVideo (fontS,imageS)
   state <- newIORef newState 
-  myAudio
+  --myAudio
   myLoop state renderer ftexs itexs
   myQuit window 
 

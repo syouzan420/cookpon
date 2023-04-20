@@ -16,4 +16,4 @@ myAudio = do
   print md
 
 --testAudio :: M.Audio
---testAudio = M.Audio 11025 M.FormatS16_Sys M.Stereo
+--testAudio = M.Audio 44100 M.FormatS16_LSB M.Stereo

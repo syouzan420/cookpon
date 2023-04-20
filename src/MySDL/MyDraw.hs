@@ -15,7 +15,7 @@ myDraw :: State -> Renderer -> [Texture] -> [Texture] -> IO State
 myDraw st re ftexs itexs = do
   initDraw re
   let mp = gmp st; it = itx st
-  mapDraw re (drop 2 itexs) mp it 
+  mapDraw re (drop 4 itexs) mp it 
   let ps = pos st; cp = cpn st;
   charaDraw re (take 2 itexs) ps cp it 
   let ts = tsc st; tx = txt st; ti = txi st; lc = lec st

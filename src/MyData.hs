@@ -40,13 +40,15 @@ fontFiles :: [FilePath]
 fontFiles = map ("font/"++) ["monaco.ttf","marugo.TTC","oshide.otf"]
 
 imageFiles :: [FilePath]
-imageFiles = map ("images/"++) ["cook5.png","cook6.png","takapon1.png","takapon2.png"]
+imageFiles = map (\s -> "images/"++s++".png") ["cook5","cook6","takapon1","takapon2"
+                                              ,"chikei0","chikei1"
+                                              ,"kome","onigiri","mizu","nori","ume"]
 
 textFiles :: [FilePath]
 textFiles = map ("texts/"++) ["cook0.txt","cook0.txt"]
 
 musicFiles :: [FilePath]
-musicFiles = ["music/cooktest3.mp3"]
+musicFiles = ["music/test.mp3"]
 
 delayTime :: Word32
 delayTime = 50
