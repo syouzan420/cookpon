@@ -19,17 +19,19 @@ inputEvent st = do
   let len = length tx
   let tlen = T.length (tx!!ti)
   let (V2 lfp upp) = initGamePosition
-  let iLeftEdge = lfp >= px 
-  let iUpEdge = upp >= py
-  let mapHLength = fromIntegral$length (head mp)
-  let mapVLength = fromIntegral$length mp
-  let iRightEdge = lfp+(mapHLength-1)*charaSize <= px
-  let iDownEdge = upp+(mapVLength-1)*charaSize <= py
+  let (V2 gx gy) = V2 ((round$(fromIntegral (px-lfp)::Float) / fromIntegral charaSize)::Int) 
+                      (round$(fromIntegral (py-upp)::Float) / fromIntegral charaSize)
+  let iLeftEdge = gx == 0 
+  let iUpEdge = gy == 0 
+  let mapHLength = length (head mp)
+  let mapVLength = length mp
+  let iRightEdge = gx == mapHLength - 1 
+  let iDownEdge = gy == mapVLength - 1 
   let ndr
-        | kc==0 && not iLeftEdge && hPressed = 3
-        | kc==0 && not iRightEdge && lPressed = 7
-        | kc==0 && not iDownEdge && jPressed = 1
-        | kc==0 && not iUpEdge && kPressed = 9
+        | kc==0 && not iLeftEdge && hPressed && isPass (V2 (gx-1) gy) mp = 3
+        | kc==0 && not iRightEdge && lPressed && isPass (V2 (gx+1) gy) mp = 7
+        | kc==0 && not iDownEdge && jPressed  && isPass (V2 gx (gy+1)) mp = 1
+        | kc==0 && not iUpEdge && kPressed && isPass (V2 gx (gy-1)) mp = 9
         | kc==0 = 0
         | otherwise = dr
   let nkec = if kc==0 && ndr/=0 then initKeyEventCount else kc
@@ -43,3 +45,7 @@ inputEvent st = do
       st' = st{kec=nkec,dir=ndr,itx=nit,lec=nlec,txi=nti}
   return (st',qPressed)
 
+isPass :: V2 Int -> [[Int]] -> Bool
+isPass (V2 gx gy) mp = let ln = mp!!gy
+                           tg = ln!!gx
+                        in tg==0
