@@ -52,26 +52,26 @@ charaDraw re itexs ps cp it = do
 textsDraw :: Renderer -> [Texture] -> Pos -> CInt -> [T.Text] -> Int -> Int -> Int -> IO CInt 
 textsDraw re texs ps sc tx ti lc i = do
   if ti==i-1 then return sc else do
-    let txt = tx!!i
-    let lc' = if ti==i then lc else T.length txt - 1
-    (nps,nsc) <- textDraw re [texs!!i,texs!!i,texs!!i] ps sc Hi txt lc'
+    let t = tx!!i
+    let lc' = if ti==i then lc else T.length t - 1
+    (nps,nsc) <- textDraw re [texs!!i,texs!!i,texs!!i] ps sc Hi t lc'
     let (nps',nsc') = nextTextPos '\n' nps nsc 
     textsDraw re texs nps' nsc' tx ti lc (i+1)
 
 
 textDraw :: Renderer -> [Texture] -> Pos -> CInt -> Fchr -> T.Text -> Int -> IO (Pos,CInt)
-textDraw re ftexs ps sc fc txt lc = do
+textDraw re ftexs ps sc fc tx lc = do
   let fontIndex = case fc of Ro -> 0; Hi -> 1; Os -> 2
-  showChars re (ftexs!!fontIndex) fc letterSize txt ps sc (lc+1) 0
+  showChars re (ftexs!!fontIndex) fc letterSize tx ps sc (lc+1) 0
 
 showChars :: Renderer -> Texture -> Fchr -> CInt -> T.Text -> Pos -> CInt -> Int -> Int -> IO (Pos,CInt) 
-showChars r t fc s txt p sc lc i = do
+showChars r t fc s tx p sc lc i = do
   if lc==i then return (p,sc) else do
-    let ch = T.index txt i
+    let ch = T.index tx i
     let (np,ns) = nextTextPos ch p sc
 --    if ch=='\n' then return () else showOneChar r t fc s p ch
     if ch=='\n' then return () else showOneIndexChar r t s p ch i 
-    showChars r t fc s txt np ns lc (i+1)
+    showChars r t fc s tx np ns lc (i+1)
 
 nextTextPos :: Char -> Pos -> CInt -> (Pos,CInt)
 nextTextPos ch (V2 px py) sc =

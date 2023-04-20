@@ -3,10 +3,9 @@ module MyData(Pos,State(..),Fchr(..),initState,initKeyEventCount,initCharaAnimeC
              ,initTextEventCount,initTextPosition,initPlayerPosition,initGamePosition
              ,fontSize,fontColor,hideAlpha,letterSize
              ,verticalLetterGap,horizontalLetterGap,textLimitBelow,textLimitLeft,charaSize
-             ,movePixel,hiragana,fontFiles,imageFiles,textFiles
+             ,movePixel,fontFiles,imageFiles,textFiles
              ,musicFiles,title,windowSize,testMap,delayTime) where
 
---import SDL.Vect (V4(..),V2(..))
 import Linear.V2 (V2(..))
 import Linear.V4 (V4(..))
 import Foreign.C.Types (CInt)
@@ -100,9 +99,6 @@ charaSize = 48
 
 movePixel :: CInt
 movePixel = 8
-
-hiragana :: T.Text
-hiragana = "あかはなまいきひにみうくふぬむえけへねめおこほのもとろそよをてれせゑつるすゆんちりしゐたらさやわがばぎびぐぶげべごぼどぞでぜづずぢじだざぱぴぷぺぽっアカハナマイキヒニミウクフヌムエケヘネメオコホノモトロソヨヲテレセヱツルスユンチリシヰタラサヤワガバギビグブゲベゴボドゾデゼヅズヂジダザパピプペポッ"
 
 testMap :: [[Int]]
 testMap = [[0,0,1,1,1],[1,0,0,1,1],[1,0,0,1,1],[1,1,1,0,0],[1,0,1,0,1]]
