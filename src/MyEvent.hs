@@ -1,16 +1,13 @@
 module MyEvent(inputEvent) where
 
-import SDL.Event (EventPayload(KeyboardEvent),eventPayload,keyboardEventKeyMotion
-                 ,InputMotion(Pressed,Released),keyboardEventKeysym,pollEvents)
-import SDL.Input.Keyboard (Keysym(keysymKeycode))
-import SDL.Input.Keyboard.Codes
 import SDL.Vect (V2(..))
 import qualified Data.Text as T
 import MyData (State(..),initKeyEventCount,initGamePosition,charaSize)
+import MyInput (myInput)
 
 inputEvent :: State -> IO (State,Bool)
 inputEvent st = do
-  events <- pollEvents
+  [qPressed,spReleased,hPressed,jPressed,kPressed,lPressed] <- myInput 
   let (V2 px py) = pos st
   let mp = gmp st
   let kc = kec st
@@ -21,80 +18,6 @@ inputEvent st = do
   let ti = txi st
   let len = length tx
   let tlen = T.length (tx!!ti)
-  let eventIsQPress e =
-        case eventPayload e of
-          KeyboardEvent keyboardEvent ->
-            keyboardEventKeyMotion keyboardEvent == Pressed &&
-            keysymKeycode (keyboardEventKeysym keyboardEvent) == KeycodeQ
-          _ -> False
-  let eventIsHPress e =
-        case eventPayload e of
-          KeyboardEvent keyboardEvent ->
-            keyboardEventKeyMotion keyboardEvent == Pressed &&
-              keysymKeycode (keyboardEventKeysym keyboardEvent) == KeycodeH
-          _ -> False
-  let eventIsJPress e =
-        case eventPayload e of
-          KeyboardEvent keyboardEvent ->
-            keyboardEventKeyMotion keyboardEvent == Pressed &&
-              keysymKeycode (keyboardEventKeysym keyboardEvent) == KeycodeJ
-          _ -> False
-  let eventIsKPress e =
-        case eventPayload e of
-          KeyboardEvent keyboardEvent ->
-            keyboardEventKeyMotion keyboardEvent == Pressed &&
-              keysymKeycode (keyboardEventKeysym keyboardEvent) == KeycodeK
-          _ -> False
-  let eventIsLPress e =
-        case eventPayload e of
-          KeyboardEvent keyboardEvent ->
-            keyboardEventKeyMotion keyboardEvent == Pressed &&
-              keysymKeycode (keyboardEventKeysym keyboardEvent) == KeycodeL
-          _ -> False
-{--
-  let eventIsHRelease e =
-        case eventPayload e of
-          KeyboardEvent keyboardEvent ->
-            keyboardEventKeyMotion keyboardEvent == Released &&
-              keysymKeycode (keyboardEventKeysym keyboardEvent) == KeycodeH
-          _ -> False
-  let eventIsJRelease e =
-        case eventPayload e of
-          KeyboardEvent keyboardEvent ->
-            keyboardEventKeyMotion keyboardEvent == Released &&
-              keysymKeycode (keyboardEventKeysym keyboardEvent) == KeycodeJ
-          _ -> False
-  let eventIsKRelease e =
-        case eventPayload e of
-          KeyboardEvent keyboardEvent ->
-            keyboardEventKeyMotion keyboardEvent == Released &&
-              keysymKeycode (keyboardEventKeysym keyboardEvent) == KeycodeK
-          _ -> False
-  let eventIsLRelease e =
-        case eventPayload e of
-          KeyboardEvent keyboardEvent ->
-            keyboardEventKeyMotion keyboardEvent == Released &&
-              keysymKeycode (keyboardEventKeysym keyboardEvent) == KeycodeL
-          _ -> False
---}
-  let eventIsSpaceRelease e =
-        case eventPayload e of
-          KeyboardEvent keyboardEvent ->
-            keyboardEventKeyMotion keyboardEvent == Released &&
-              keysymKeycode (keyboardEventKeysym keyboardEvent) == KeycodeSpace
-          _ -> False
-{--
-      hReleased = any eventIsHRelease events
-      jReleased = any eventIsJRelease events
-      kReleased = any eventIsKRelease events
-      lReleased = any eventIsLRelease events
---}
-      qPressed = any eventIsQPress events
-      spReleased = any eventIsSpaceRelease events
-      hPressed = any eventIsHPress events
-      jPressed = any eventIsJPress events
-      kPressed = any eventIsKPress events
-      lPressed = any eventIsLPress events
   let (V2 lfp upp) = initGamePosition
   let iLeftEdge = lfp >= px 
   let iUpEdge = upp >= py

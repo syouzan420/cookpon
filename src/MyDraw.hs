@@ -1,6 +1,5 @@
 module MyDraw(initDraw,charaDraw,textDraw,textsDraw,mapDraw) where
 
-
 import SDL.Video (Renderer,Texture)
 import SDL.Video.Renderer (rendererDrawColor,clear,copy,copyEx,Rectangle(..),textureAlphaMod)
 import SDL (($=))
@@ -8,9 +7,9 @@ import SDL.Vect (Point(P),V2(..),V4(..))
 import Control.Monad.IO.Class (MonadIO)
 import qualified Data.Text as T
 import Foreign.C.Types (CInt)
-import Data.List (elemIndex)
-import Data.Maybe (fromMaybe)
-import MyData(Fchr(..),Pos,initCharaAnimeCount,charaSize,hiragana,fontSize,letterSize
+--import Data.List (elemIndex)
+--import Data.Maybe (fromMaybe)
+import MyData(Fchr(..),Pos,charaSize,fontSize,letterSize
              ,initTextPosition,initGamePosition,verticalLetterGap,horizontalLetterGap
              ,textLimitBelow,textLimitLeft,hideAlpha)
 
@@ -18,18 +17,6 @@ initDraw :: Renderer -> IO ()
 initDraw re = do
   rendererDrawColor re $= V4 182 100 255 255
   clear re
-
---testDraw :: Renderer -> [Texture] -> [Texture] -> IO ()
---testDraw re ftexs itexs = do
---  rendererDrawColor re $= V4 0 0 0 255
---  drawPoint re (P (V2 100 100))
---  drawLine re (P (V2 50 50)) (P (V2 80 80))
---  let rects = map (\(V4 x y w h) -> Rectangle (P (V2 x y)) (V2 w h))
---                [V4 30 300 400 50,V4 10 200 550 30,V4 10 250 550 30,V4 10 400 30 30]
---  mapM_ (\(s,tex) -> copy re tex Nothing (Just s)) (zip rects ftexs)
---  showOneChar re (head ftexs) Ro 40 (V2 50 400) 'e'
---  showOneChar re (ftexs!!1) Hi 40 (V2 100 400) 'は'
---  showOneChar re (ftexs!!2) Hi 40 (V2 150 400) 'は'
 
 mapDraw :: Renderer -> [Texture] -> [[Int]] -> Bool -> IO ()
 mapDraw re itexs mps it = do 
@@ -41,7 +28,7 @@ mapLinesDraw _ _ [] _ = return ()
 mapLinesDraw re itexs (mp:mps) i = do
   let position = initGamePosition + (V2 0 charaSize*fromIntegral i)
   mapM_ (\(c,x)-> copy re (itexs!!c) Nothing 
-      (Just$Rectangle (P (position+V2 (charaSize*fromIntegral x) 0))(V2 charaSize charaSize))) (zip mp [0..])
+      (Just$Rectangle (P (position+V2 (charaSize*fromIntegral x) 0))(V2 charaSize charaSize))) (zip mp [(0::Int)..])
   mapLinesDraw re itexs mps (i+1)
 
 charaDraw :: Renderer -> [Texture] -> Pos -> Int -> Bool -> IO ()
@@ -84,19 +71,7 @@ nextTextPos ch (V2 px py) sc =
       npx = if npy > textLimitBelow || ch=='\n' then px - dx else px
       npx' = if npx < textLimitLeft then npx + dx else npx
       nsc = if npx < textLimitLeft then sc + dx else sc
-   in (V2 npx npy',nsc)
-
-showOneChar :: MonadIO m => Renderer -> Texture -> Fchr -> CInt -> Pos -> Char -> m ()
-showOneChar r t fc s p ch =
-  let fchrs = case fc of
-                Ro -> ['a'..'z']
-                _ -> T.unpack hiragana
-      wds = fromIntegral fontSize
-      dx = case fc of Ro -> 14; _ -> wds 
-      dy = case fc of Ro -> wds; _ ->  wds 
-      index = fromMaybe (-1) (elemIndex ch fchrs)
-   in copy r t (Just (Rectangle (P (V2 (fromIntegral index*dx) 0)) (V2 dx dy)))
-               (Just (Rectangle (P p) (V2 s s)))
+   in (V2 npx' npy',nsc)
 
 showOneIndexChar :: MonadIO m => Renderer -> Texture -> CInt -> Pos -> Char -> Int -> m ()
 showOneIndexChar r t s p ch i =
@@ -107,3 +82,28 @@ showOneIndexChar r t s p ch i =
       rotate = 90
    in if irt then copyEx r t rectSrc rectDst rotate Nothing (V2 False False)
              else copy r t rectSrc rectDst
+
+--testDraw :: Renderer -> [Texture] -> [Texture] -> IO ()
+--testDraw re ftexs itexs = do
+--  rendererDrawColor re $= V4 0 0 0 255
+--  drawPoint re (P (V2 100 100))
+--  drawLine re (P (V2 50 50)) (P (V2 80 80))
+--  let rects = map (\(V4 x y w h) -> Rectangle (P (V2 x y)) (V2 w h))
+--                [V4 30 300 400 50,V4 10 200 550 30,V4 10 250 550 30,V4 10 400 30 30]
+--  mapM_ (\(s,tex) -> copy re tex Nothing (Just s)) (zip rects ftexs)
+--  showOneChar re (head ftexs) Ro 40 (V2 50 400) 'e'
+--  showOneChar re (ftexs!!1) Hi 40 (V2 100 400) 'は'
+--  showOneChar re (ftexs!!2) Hi 40 (V2 150 400) 'は'
+
+--showOneChar :: MonadIO m => Renderer -> Texture -> Fchr -> CInt -> Pos -> Char -> m ()
+--showOneChar r t fc s p ch =
+--  let fchrs = case fc of
+--              Ro -> ['a'..'z']
+--              _ -> T.unpack hiragana
+--    wds = fromIntegral fontSize
+--    dx = case fc of Ro -> 14; _ -> wds 
+--    dy = case fc of Ro -> wds; _ ->  wds 
+--    index = fromMaybe (-1) (elemIndex ch fchrs)
+-- in copy r t (Just (Rectangle (P (V2 (fromIntegral index*dx) 0)) (V2 dx dy)))
+--            (Just (Rectangle (P p) (V2 s s)))
+

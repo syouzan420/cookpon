@@ -1,12 +1,18 @@
 {-#LANGUAGE OverloadedStrings #-}
-module MyLoad(loadImages,loadText) where
+module MyLoad(myLoad) where
 
 import qualified SDL.Image as I 
 import qualified SDL.Font as F
 import qualified Data.Text as T
 import SDL.Video.Renderer(Surface)
-import MyData(State(..),Fchr,fontColor)
+import MyData(State(..),Fchr(..),fontColor,fontSize,fontFiles,textFiles,imageFiles,initState)
 import MyFile(fileRead)
+
+myLoad :: IO (State,[Surface],[Surface])
+myLoad = do
+  (newState,fontTS) <- loadText fontSize Hi fontFiles (head textFiles) initState 
+  imageS <- loadImages imageFiles 
+  return (newState,fontTS,imageS)
 
 loadImages :: [FilePath] -> IO [Surface]
 loadImages = mapM I.load 
@@ -20,8 +26,8 @@ loadFonts fs files = do
 --}
 
 loadText :: F.PointSize -> Fchr -> [FilePath] -> FilePath -> State -> IO (State,[Surface])
-loadText fs fc fontFiles textFile st = do
-  let fontFile = fontFiles!!fromEnum fc
+loadText fs fc fFiles textFile st = do
+  let fontFile = fFiles!!fromEnum fc
   font <- F.load fontFile fs
   doc <- fileRead textFile 
   let docl = map changeSpace (T.lines doc)

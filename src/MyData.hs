@@ -4,13 +4,13 @@ module MyData(Pos,State(..),Fchr(..),initState,initKeyEventCount,initCharaAnimeC
              ,fontSize,fontColor,hideAlpha,letterSize
              ,verticalLetterGap,horizontalLetterGap,textLimitBelow,textLimitLeft,charaSize
              ,movePixel,hiragana,fontFiles,imageFiles,textFiles
-             ,musicFiles,title,windowSize,testMap) where
+             ,musicFiles,title,windowSize,testMap,delayTime) where
 
 import SDL.Vect (V4(..),V2(..))
 import Foreign.C.Types (CInt)
 import SDL.Font (PointSize) 
 import qualified Data.Text as T
-import Data.Word (Word8)
+import Data.Word (Word8,Word32)
 
 type Pos = V2 CInt 
 type Gmap = [[Int]]
@@ -48,6 +48,8 @@ textFiles = map ("texts/"++) ["cook0.txt","cook0.txt"]
 musicFiles :: [FilePath]
 musicFiles = ["music/cooktest3.mp3"]
 
+delayTime :: Word32
+delayTime = 50
 
 initKeyEventCount :: CInt
 initKeyEventCount = charaSize `div` movePixel

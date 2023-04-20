@@ -27,12 +27,17 @@ library
   exposed-modules:
       MyAction
       MyApp
+      MyAudio
       MyData
       MyDraw
       MyEvent
       MyFile
+      MyInit
+      MyInitVideo
+      MyInput
       MyLoad
       MyLoop
+      MyQuit
   other-modules:
       Paths_cookpon
   hs-source-dirs:
