@@ -34,6 +34,7 @@ dependencies:
 - text
 - StateVar
 - bytestring
+- linear
 
 ghc-options:
 - -Wall

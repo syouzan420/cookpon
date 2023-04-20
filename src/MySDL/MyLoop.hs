@@ -1,11 +1,12 @@
-module MyLoop(myLoop) where
+module MySDL.MyLoop(myLoop) where
 
 import Control.Monad (unless)
 import Data.IORef(IORef)
 import SDL(get,($=))
 import SDL.Video.Renderer (Renderer,Texture)
 import SDL.Time(delay)
-import MyAction(mainAction)
+import MyAction(myAction)
+import MySDL.MyDraw(myDraw)
 import MyData(State(..),delayTime)
 import MyEvent(inputEvent)
 
@@ -14,7 +15,7 @@ myLoop state re ftexs itexs = do
   st <- get state
   let time = tim st
   (nst,qPressed) <- inputEvent st
-  nst' <- mainAction nst re ftexs itexs
+  nst' <- myDraw (myAction nst) re ftexs itexs
   state $= nst'{tim=time+1}
 --  print time
   delay delayTime 

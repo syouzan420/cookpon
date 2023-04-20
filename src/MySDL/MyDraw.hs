@@ -1,17 +1,29 @@
-module MyDraw(initDraw,charaDraw,textDraw,textsDraw,mapDraw) where
+module MySDL.MyDraw(myDraw,initDraw) where
 
 import SDL.Video (Renderer,Texture)
-import SDL.Video.Renderer (rendererDrawColor,clear,copy,copyEx,Rectangle(..),textureAlphaMod)
+import SDL.Video.Renderer (rendererDrawColor,clear,copy,copyEx,Rectangle(..),textureAlphaMod,present)
 import SDL (($=))
 import SDL.Vect (Point(P),V2(..),V4(..))
 import Control.Monad.IO.Class (MonadIO)
 import qualified Data.Text as T
 import Foreign.C.Types (CInt)
---import Data.List (elemIndex)
---import Data.Maybe (fromMaybe)
-import MyData(Fchr(..),Pos,charaSize,fontSize,letterSize
+import MyData(State(..),Fchr(..),Pos,charaSize,fontSize,letterSize
              ,initTextPosition,initGamePosition,verticalLetterGap,horizontalLetterGap
              ,textLimitBelow,textLimitLeft,hideAlpha)
+
+myDraw :: State -> Renderer -> [Texture] -> [Texture] -> IO State
+myDraw st re ftexs itexs = do
+  initDraw re
+  let mp = gmp st; it = itx st
+  mapDraw re (drop 2 itexs) mp it 
+  let ps = pos st; cp = cpn st;
+  charaDraw re (take 2 itexs) ps cp it 
+  let ts = tsc st; tx = txt st; ti = txi st; lc = lec st
+  let startTextPosition = initTextPosition + V2 ts 0
+  nts <- if it then textsDraw re ftexs startTextPosition ts tx ti lc 0 else return ts
+  present re
+  let nst = st{tsc=nts}
+  return nst
 
 initDraw :: Renderer -> IO ()
 initDraw re = do

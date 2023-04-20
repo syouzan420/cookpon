@@ -1,4 +1,4 @@
-module MyInit(myInit) where
+module MySDL.MyInit(myInit) where
 
 import SDL.Init (initializeAll) 
 import qualified SDL.Font as F

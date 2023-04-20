@@ -1,10 +1,10 @@
-module MyInitVideo(myInitVideo) where
+module MySDL.MyInitVideo(myInitVideo) where
 
-import SDL.Video (Window,createWindow,defaultWindow,windowInitialSize,destroyWindow
+import SDL.Video (Window,createWindow,defaultWindow,windowInitialSize
                  ,createRenderer,defaultRenderer)
 import SDL.Video.Renderer (Surface,Renderer,Texture,createTextureFromSurface,present,freeSurface)
+import MySDL.MyDraw (initDraw)
 import MyData (windowSize,title)
-import MyDraw (initDraw)
 
 myInitVideo :: ([Surface],[Surface]) -> IO (Window,Renderer,[Texture],[Texture]) 
 myInitVideo (fontS,imageS) = do

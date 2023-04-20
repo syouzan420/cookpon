@@ -1,4 +1,4 @@
-module MyFile where
+module MyFile(fileRead) where
 
 import qualified Data.Text as T
 import qualified Data.ByteString as B

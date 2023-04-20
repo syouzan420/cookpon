@@ -1,12 +1,12 @@
 module MyApp(appMain) where
 
 import Data.IORef(newIORef)
-import MyLoad (myLoad)
-import MyLoop (myLoop)
-import MyInit (myInit)
-import MyInitVideo (myInitVideo)
-import MyAudio (myAudio)
-import MyQuit (myQuit)
+import MySDL.MyLoad (myLoad)
+import MySDL.MyLoop (myLoop)
+import MySDL.MyInit (myInit)
+import MySDL.MyInitVideo (myInitVideo)
+import MySDL.MyAudio (myAudio)
+import MySDL.MyQuit (myQuit)
 
 appMain :: IO ()
 appMain = do

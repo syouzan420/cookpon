@@ -1,4 +1,4 @@
-module MyInput(myInput) where
+module MySDL.MyInput(myInput) where
 
 import SDL.Event (EventPayload(KeyboardEvent),eventPayload,keyboardEventKeyMotion
                  ,InputMotion(Pressed,Released),keyboardEventKeysym,pollEvents)

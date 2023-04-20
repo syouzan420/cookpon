@@ -1,9 +1,9 @@
 module MyEvent(inputEvent) where
 
-import SDL.Vect (V2(..))
+import Linear.V2 (V2(..))
 import qualified Data.Text as T
 import MyData (State(..),initKeyEventCount,initGamePosition,charaSize)
-import MyInput (myInput)
+import MySDL.MyInput (myInput)
 
 inputEvent :: State -> IO (State,Bool)
 inputEvent st = do

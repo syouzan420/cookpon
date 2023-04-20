@@ -1,4 +1,4 @@
-module MyQuit (myQuit) where
+module MySDL.MyQuit (myQuit) where
 
 import SDL.Mixer (closeAudio)
 import SDL.Video (Window,destroyWindow)

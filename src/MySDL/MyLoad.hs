@@ -1,5 +1,5 @@
 {-#LANGUAGE OverloadedStrings #-}
-module MyLoad(myLoad) where
+module MySDL.MyLoad(myLoad) where
 
 import qualified SDL.Image as I 
 import qualified SDL.Font as F

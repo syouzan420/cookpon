@@ -27,17 +27,17 @@ library
   exposed-modules:
       MyAction
       MyApp
-      MyAudio
       MyData
-      MyDraw
       MyEvent
       MyFile
-      MyInit
-      MyInitVideo
-      MyInput
-      MyLoad
-      MyLoop
-      MyQuit
+      MySDL.MyAudio
+      MySDL.MyDraw
+      MySDL.MyInit
+      MySDL.MyInitVideo
+      MySDL.MyInput
+      MySDL.MyLoad
+      MySDL.MyLoop
+      MySDL.MyQuit
   other-modules:
       Paths_cookpon
   hs-source-dirs:
@@ -47,6 +47,7 @@ library
       StateVar
     , base >=4.7 && <5
     , bytestring
+    , linear
     , sdl2
     , sdl2-image
     , sdl2-mixer
@@ -66,6 +67,7 @@ executable cookpon-exe
     , base >=4.7 && <5
     , bytestring
     , cookpon
+    , linear
     , sdl2
     , sdl2-image
     , sdl2-mixer
@@ -86,6 +88,7 @@ test-suite cookpon-test
     , base >=4.7 && <5
     , bytestring
     , cookpon
+    , linear
     , sdl2
     , sdl2-image
     , sdl2-mixer

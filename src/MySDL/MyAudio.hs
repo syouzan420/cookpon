@@ -1,4 +1,4 @@
-module MyAudio(myAudio) where
+module MySDL.MyAudio(myAudio) where
 
 import qualified SDL.Mixer as M
 import MyData (musicFiles)
