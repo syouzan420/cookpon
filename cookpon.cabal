@@ -26,6 +26,7 @@ source-repository head
 library
   exposed-modules:
       MyAction
+      MyALUT.MyAudio
       MyApp
       MyData
       MyDataJ
@@ -45,7 +46,10 @@ library
       src
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
-      StateVar
+      ALUT
+    , ObjectName
+    , OpenAL
+    , StateVar
     , base >=4.7 && <5
     , bytestring
     , linear
@@ -64,7 +68,10 @@ executable cookpon-exe
       app
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      StateVar
+      ALUT
+    , ObjectName
+    , OpenAL
+    , StateVar
     , base >=4.7 && <5
     , bytestring
     , cookpon
@@ -85,7 +92,10 @@ test-suite cookpon-test
       test
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      StateVar
+      ALUT
+    , ObjectName
+    , OpenAL
+    , StateVar
     , base >=4.7 && <5
     , bytestring
     , cookpon

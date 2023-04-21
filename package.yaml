@@ -35,6 +35,9 @@ dependencies:
 - StateVar
 - bytestring
 - linear
+- ALUT
+- OpenAL
+- ObjectName
 
 ghc-options:
 - -Wall
