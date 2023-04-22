@@ -10,15 +10,14 @@ import Foreign.C.Types (CInt)
 import MyData(State(..),Fchr(..),Pos,charaSize,fontSize,letterSize
              ,initTextPosition,initGamePosition,verticalLetterGap,horizontalLetterGap
              ,textLimitBelow,textLimitLeft,hideAlpha)
+import MyDataJ(Gmap,Tマス(..),Tモノ(..))
 
 myDraw :: State -> Renderer -> [Texture] -> [Texture] -> IO State
 myDraw st re ftexs itexs = do
+  let State ps _ _ cp _ tx it lc ti _ ts mp _ = st
   initDraw re
-  let mp = gmp st; it = itx st
   mapDraw re (drop 4 itexs) mp it 
-  let ps = pos st; cp = cpn st;
   charaDraw re (take 2 itexs) ps cp it 
-  let ts = tsc st; tx = txt st; ti = txi st; lc = lec st
   let startTextPosition = initTextPosition + V2 ts 0
   nts <- if it then textsDraw re ftexs startTextPosition ts tx ti lc 0 else return ts
   present re
@@ -30,18 +29,23 @@ initDraw re = do
   rendererDrawColor re $= V4 182 100 255 255
   clear re
 
-mapDraw :: Renderer -> [Texture] -> [[Int]] -> Bool -> IO ()
+mapDraw :: Renderer -> [Texture] -> Gmap -> Bool -> IO ()
 mapDraw re itexs mps it = do 
   mapM_ (\t -> textureAlphaMod t $= if it then hideAlpha else 255) itexs
   mapLinesDraw re itexs mps 0
 
-mapLinesDraw :: Renderer -> [Texture] -> [[Int]] -> Int -> IO ()
+mapLinesDraw :: Renderer -> [Texture] -> Gmap -> Int -> IO ()
 mapLinesDraw _ _ [] _ = return ()
 mapLinesDraw re itexs (mp:mps) i = do
   let position = initGamePosition + (V2 0 charaSize*fromIntegral i)
-  mapM_ (\(c,x)-> copy re (itexs!!c) Nothing 
-      (Just$Rectangle (P (position+V2 (charaSize*fromIntegral x) 0))(V2 charaSize charaSize))) (zip mp [(0::Int)..])
+  mapM_ (\(Tマス (V2 x _) _ chi)-> copy re (itexs!!fromEnum chi) Nothing 
+      (Just$Rectangle (P (position+V2 (charaSize*fromIntegral x) 0))(V2 charaSize charaSize))) mp
   mapLinesDraw re itexs mps (i+1)
+
+monoToNum :: Tモノ -> Int
+monoToNum mn = case mn of
+                 No -> 0; Taka -> 1; Teru -> 2; Cook -> 3
+                 I zai -> 4 + fromEnum zai
 
 charaDraw :: Renderer -> [Texture] -> Pos -> Int -> Bool -> IO ()
 charaDraw re itexs ps cp it = do

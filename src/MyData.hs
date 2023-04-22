@@ -12,12 +12,13 @@ import Foreign.C.Types (CInt)
 import SDL.Font (PointSize) 
 import qualified Data.Text as T
 import Data.Word (Word8,Word32)
+import MyDataJ (Gmap,testMap)
 
 type Pos = V2 CInt 
 
 data State = State{pos :: Pos, kec :: CInt, cac :: CInt, cpn :: Int, dir :: CInt
                   ,txt :: [T.Text], itx :: Bool, lec :: Int, txi :: Int, tec :: CInt, tsc :: CInt
-                  , gmp :: [[Int]], tim :: Integer}
+                  , gmp :: Gmap, tim :: Integer}
 -- pos: Position , kec: KeyEventCount
 -- cac: CharaAnimeCount, cpn: CharaPictureNumber
 -- dir: Direction
@@ -101,5 +102,5 @@ charaSize = 48
 movePixel :: CInt
 movePixel = 8
 
-testMap :: [[Int]]
-testMap = [[0,0,1,1,1],[1,0,0,1,1],[1,0,0,0,1],[1,1,1,0,0],[1,0,0,0,0]]
+--testMap :: [[Int]]
+--testMap = [[0,0,1,1,1],[1,0,0,1,1],[1,0,0,0,1],[1,1,1,0,0],[1,0,0,0,0]]

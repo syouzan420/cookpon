@@ -1,4 +1,4 @@
-module MyDataJ(T位置,T材料(..),Tモノ(..),T地形(..),Tマス,Gmap,testMap) where
+module MyDataJ(T位置,T材料(..),Tモノ(..),T地形(..),Tマス(..),Gmap,testMap) where
 
 import Linear.V2(V2(..))
 

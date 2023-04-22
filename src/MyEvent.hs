@@ -4,18 +4,12 @@ import Linear.V2 (V2(..))
 import qualified Data.Text as T
 import MyData (State(..),initKeyEventCount,initGamePosition,charaSize)
 import MySDL.MyInput (myInput)
+import MyDataJ (Gmap,Tマス(..),T地形(..))
 
 inputEvent :: State -> IO (State,Bool)
 inputEvent st = do
+  let State (V2 px py) kc _ _ dr tx it lc ti _ _ mp _ = st
   [qPressed,spReleased,hPressed,jPressed,kPressed,lPressed] <- myInput 
-  let (V2 px py) = pos st
-  let mp = gmp st
-  let kc = kec st
-  let dr = dir st
-  let tx = txt st
-  let it = itx st
-  let lc = lec st
-  let ti = txi st
   let len = length tx
   let tlen = T.length (tx!!ti)
   let (V2 lfp upp) = initGamePosition
@@ -45,7 +39,8 @@ inputEvent st = do
       st' = st{kec=nkec,dir=ndr,itx=nit,lec=nlec,txi=nti}
   return (st',qPressed)
 
-isPass :: V2 Int -> [[Int]] -> Bool
+isPass :: V2 Int -> Gmap -> Bool
 isPass (V2 gx gy) mp = let ln = mp!!gy
                            tg = ln!!gx
-                        in tg==0
+                           Tマス _ _ chi = tg
+                        in chi==T道

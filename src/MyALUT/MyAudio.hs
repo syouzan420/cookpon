@@ -1,4 +1,4 @@
-module MyALUT.MyAudio where
+module MyALUT.MyAudio(withMyAudio) where
 
 import Sound.ALUT.Initialization (withProgNameAndArgs,runALUTUsingCurrentContext)
 import Sound.ALUT.Loaders (createBuffer,SoundDataSource(File))
