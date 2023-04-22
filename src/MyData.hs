@@ -9,12 +9,12 @@ module MyData(Pos,State(..),Fchr(..),initState,initKeyEventCount,initCharaAnimeC
 import Linear.V2 (V2(..))
 import Linear.V4 (V4(..))
 import Foreign.C.Types (CInt)
-import SDL.Font (PointSize) 
 import qualified Data.Text as T
 import Data.Word (Word8,Word32)
 import MyDataJ (Gmap,testMap)
 
 type Pos = V2 CInt 
+type PointSize = Int
 
 data State = State{pos :: Pos, kec :: CInt, cac :: CInt, cpn :: Int, dir :: CInt
                   , itx :: Bool, lec :: Int, txi :: Int, tec :: CInt, tsc :: CInt
@@ -102,5 +102,3 @@ charaSize = 48
 movePixel :: CInt
 movePixel = 8
 
---testMap :: [[Int]]
---testMap = [[0,0,1,1,1],[1,0,0,1,1],[1,0,0,0,1],[1,1,1,0,0],[1,0,0,0,0]]
