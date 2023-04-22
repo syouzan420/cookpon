@@ -10,7 +10,7 @@ import MyALUT.MyAudio (withMyAudio)
 import MyData (initState)
 
 appMain :: IO ()
-appMain = do
+appMain = 
   withMyInit $ do
     (docl,sur) <- myLoad
     withMyVideo sur $ 
