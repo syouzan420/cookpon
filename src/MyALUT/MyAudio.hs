@@ -11,11 +11,9 @@ import Data.IORef(IORef)
 import Data.ObjectName (genObjectName)
 import Data.StateVar (($=))
 import Control.Monad.IO.Class (MonadIO)
-import MyData(State)
-import MySDL.MyLoop(myLoop)
 
-withMyAudio :: IORef State -> Renderer -> [Texture] -> [Texture] -> IO () 
-withMyAudio state renderer ftexs itexs = 
+withMyAudio :: (MonadIO m,MonadFail m)  => m a -> m ()
+withMyAudio op =
   withProgNameAndArgs runALUTUsingCurrentContext $ \_ _ ->
     do
       (Just device) <- openDevice Nothing
@@ -26,6 +24,6 @@ withMyAudio state renderer ftexs itexs =
       loopingMode source $= Looping
       queueBuffers source [buffer]
       play [source]
-      myLoop state renderer ftexs itexs
+      _ <- op 
       _ <- closeDevice device
       return ()

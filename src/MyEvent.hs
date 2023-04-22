@@ -6,9 +6,9 @@ import MyData (State(..),initKeyEventCount,initGamePosition,charaSize)
 import MySDL.MyInput (myInput)
 import MyDataJ (Gmap,Tマス(..),T地形(..))
 
-inputEvent :: State -> IO (State,Bool)
-inputEvent st = do
-  let State (V2 px py) kc _ _ dr tx it lc ti _ _ mp _ = st
+inputEvent :: State -> [T.Text] -> IO (State,Bool)
+inputEvent st tx = do
+  let State (V2 px py) kc _ _ dr it lc ti _ _ mp _ = st
   [qPressed,spReleased,hPressed,jPressed,kPressed,lPressed] <- myInput 
   let len = length tx
   let tlen = T.length (tx!!ti)

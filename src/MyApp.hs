@@ -3,19 +3,19 @@ module MyApp(appMain) where
 import Data.IORef(newIORef)
 import MySDL.MyLoad (myLoad)
 import MySDL.MyLoop (myLoop)
-import MySDL.MyInit (myInit)
-import MySDL.MyInitVideo (myInitVideo)
---import MySDL.MyAudio (myAudio)
+import MySDL.MyInit (withMyInit)
+import MySDL.MyInitVideo (withMyVideo)
+--import MySDL.MyAudio (withMyAudio)
 import MyALUT.MyAudio (withMyAudio)
-import MySDL.MyQuit (myQuit)
+import MyData (initState)
 
 appMain :: IO ()
 appMain = do
-  myInit
-  (newState,fontS,imageS) <- myLoad
-  (window,renderer,ftexs,itexs) <- myInitVideo (fontS,imageS)
-  state <- newIORef newState 
-  --myAudio
-  withMyAudio state renderer ftexs itexs
-  myQuit window 
+  withMyInit $ do
+    (docl,sur) <- myLoad
+    withMyVideo sur $ 
+      \(renderer,ftexs,itexs) -> do
+        state <- newIORef initState 
+        withMyAudio $ do
+          myLoop state docl renderer ftexs itexs
 

@@ -17,7 +17,7 @@ import MyDataJ (Gmap,testMap)
 type Pos = V2 CInt 
 
 data State = State{pos :: Pos, kec :: CInt, cac :: CInt, cpn :: Int, dir :: CInt
-                  ,txt :: [T.Text], itx :: Bool, lec :: Int, txi :: Int, tec :: CInt, tsc :: CInt
+                  , itx :: Bool, lec :: Int, txi :: Int, tec :: CInt, tsc :: CInt
                   , gmp :: Gmap, tim :: Integer}
 -- pos: Position , kec: KeyEventCount
 -- cac: CharaAnimeCount, cpn: CharaPictureNumber
@@ -35,7 +35,7 @@ windowSize = V2 480 600
 
 initState :: State
 initState = State{pos=initPlayerPosition, kec=0, cac=initCharaAnimeCount, cpn=0, dir=0 
-                 ,txt=[], itx=False, lec=0, txi=0, tec=3, tsc=0, gmp=testMap, tim=0}                   
+                 , itx=False, lec=0, txi=0, tec=3, tsc=0, gmp=testMap, tim=0}                   
 
 fontFiles :: [FilePath]
 fontFiles = map ("font/"++) ["monaco.ttf","marugo.TTC","oshide.otf"]

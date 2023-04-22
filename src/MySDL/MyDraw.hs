@@ -12,9 +12,9 @@ import MyData(State(..),Fchr(..),Pos,charaSize,fontSize,letterSize
              ,textLimitBelow,textLimitLeft,hideAlpha)
 import MyDataJ(Gmap,Tマス(..),Tモノ(..))
 
-myDraw :: State -> Renderer -> [Texture] -> [Texture] -> IO State
-myDraw st re ftexs itexs = do
-  let State ps _ _ cp _ tx it lc ti _ ts mp _ = st
+myDraw :: State -> [T.Text] -> Renderer -> [Texture] -> [Texture] -> IO State
+myDraw st tx re ftexs itexs = do
+  let State ps _ _ cp _ it lc ti _ ts mp _ = st
   initDraw re
   mapDraw re (drop 4 itexs) mp it 
   charaDraw re (take 2 itexs) ps cp it 
@@ -24,7 +24,7 @@ myDraw st re ftexs itexs = do
   let nst = st{tsc=nts}
   return nst
 
-initDraw :: Renderer -> IO ()
+initDraw :: MonadIO m => Renderer -> m ()
 initDraw re = do
   rendererDrawColor re $= V4 182 100 255 255
   clear re
