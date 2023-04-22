@@ -16,6 +16,5 @@ appMain = do
     withMyVideo sur $ 
       \(renderer,ftexs,itexs) -> do
         state <- newIORef initState 
-        withMyAudio $ do
-          myLoop state docl renderer ftexs itexs
+        withMyAudio $ myLoop state docl renderer ftexs itexs
 
