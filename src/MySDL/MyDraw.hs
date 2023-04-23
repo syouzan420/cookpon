@@ -10,7 +10,7 @@ import Foreign.C.Types (CInt)
 import MyData(State(..),Fchr(..),Pos,charaSize,fontSize,letterSize
              ,initTextPosition,initGamePosition,verticalLetterGap,horizontalLetterGap
              ,textLimitBelow,textLimitLeft,hideAlpha)
-import MyDataJ(Gmap,Tマス(..),Tモノ(..))
+import MyDataJ(Gmap,Tマス(..),Tモノ(..),chaNum,tikNum)
 
 myDraw :: State -> [T.Text] -> Renderer -> [Texture] -> [Texture] -> IO State
 myDraw st tx re ftexs itexs = do
@@ -38,14 +38,21 @@ mapLinesDraw :: Renderer -> [Texture] -> Gmap -> Int -> IO ()
 mapLinesDraw _ _ [] _ = return ()
 mapLinesDraw re itexs (mp:mps) i = do
   let position = initGamePosition + (V2 0 charaSize*fromIntegral i)
+  let charaSizeH = charaSize `div` 2
+  let charaSizeQ = charaSize `div` 4
   mapM_ (\(Tマス (V2 x _) _ chi)-> copy re (itexs!!fromEnum chi) Nothing 
       (Just$Rectangle (P (position+V2 (charaSize*fromIntegral x) 0))(V2 charaSize charaSize))) mp
+  mapM_ (\(Tマス (V2 x _) mon _)-> if monoToNum mon < (1+chaNum) 
+                       then return ()
+                       else copy re (itexs!!(monoToNum mon - chaNum - 1 + tikNum)) Nothing 
+      (Just$Rectangle (P (position+V2 charaSizeQ 0+V2 (charaSize*fromIntegral x) charaSizeQ))(V2 charaSizeH charaSizeH))) mp
   mapLinesDraw re itexs mps (i+1)
 
 monoToNum :: Tモノ -> Int
 monoToNum mn = case mn of
-                 No -> 0; Taka -> 1; Teru -> 2; Cook -> 3
-                 I zai -> 4 + fromEnum zai
+                 No -> 0
+                 C cha -> 1 + fromEnum cha
+                 I zai -> 1 + chaNum + fromEnum zai
 
 charaDraw :: Renderer -> [Texture] -> Pos -> Int -> Bool -> IO ()
 charaDraw re itexs ps cp it = do
