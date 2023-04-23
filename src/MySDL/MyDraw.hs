@@ -14,9 +14,9 @@ import MyDataJ(Gmap,Tマス(..),Tモノ(..),chaNum,tikNum)
 
 myDraw :: State -> [T.Text] -> Renderer -> [Texture] -> [Texture] -> IO State
 myDraw st tx re ftexs itexs = do
-  let State ps _ _ cp _ it lc ti _ ts mp _ = st
+  let State ps _ _ cp _ it lc ti _ ts mp ms _ = st
   initDraw re
-  mapDraw re (drop 4 itexs) mp it 
+  mapDraw re (drop 4 itexs) mp ms it 
   charaDraw re (take 2 itexs) ps cp it 
   let startTextPosition = initTextPosition + V2 ts 0
   nts <- if it then textsDraw re ftexs startTextPosition ts tx ti lc 0 else return ts
@@ -29,15 +29,15 @@ initDraw re = do
   rendererDrawColor re $= V4 182 100 255 255
   clear re
 
-mapDraw :: Renderer -> [Texture] -> Gmap -> Bool -> IO ()
-mapDraw re itexs mps it = do 
+mapDraw :: Renderer -> [Texture] -> Gmap -> V2 CInt -> Bool -> IO ()
+mapDraw re itexs mps ms it = do 
   mapM_ (\t -> textureAlphaMod t $= if it then hideAlpha else 255) itexs
-  mapLinesDraw re itexs mps 0
+  mapLinesDraw re itexs mps ms 0
 
-mapLinesDraw :: Renderer -> [Texture] -> Gmap -> Int -> IO ()
-mapLinesDraw _ _ [] _ = return ()
-mapLinesDraw re itexs (mp:mps) i = do
-  let position = initGamePosition + (V2 0 charaSize*fromIntegral i)
+mapLinesDraw :: Renderer -> [Texture] -> Gmap -> V2 CInt -> Int -> IO ()
+mapLinesDraw _ _ [] _ _ = return ()
+mapLinesDraw re itexs (mp:mps) ms i = do
+  let position = initGamePosition + (V2 0 charaSize*fromIntegral i) - ms
   let charaSizeH = charaSize `div` 2
   let charaSizeQ = charaSize `div` 4
   mapM_ (\(Tマス (V2 x _) _ chi)-> copy re (itexs!!fromEnum chi) Nothing 
@@ -46,7 +46,7 @@ mapLinesDraw re itexs (mp:mps) i = do
                        then return ()
                        else copy re (itexs!!(monoToNum mon - chaNum - 1 + tikNum)) Nothing 
       (Just$Rectangle (P (position+V2 charaSizeQ 0+V2 (charaSize*fromIntegral x) charaSizeQ))(V2 charaSizeH charaSizeH))) mp
-  mapLinesDraw re itexs mps (i+1)
+  mapLinesDraw re itexs mps ms (i+1)
 
 monoToNum :: Tモノ -> Int
 monoToNum mn = case mn of

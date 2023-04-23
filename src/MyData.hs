@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module MyData(Pos,State(..),Fchr(..),initState,initKeyEventCount,initCharaAnimeCount
              ,initTextEventCount,initTextPosition,initPlayerPosition,initGamePosition
-             ,fontSize,fontColor,hideAlpha,letterSize
+             ,fontSize,fontColor,hideAlpha,letterSize,mapLimitRight,mapLimitDown
              ,verticalLetterGap,horizontalLetterGap,textLimitBelow,textLimitLeft,charaSize
              ,movePixel,fontFiles,imageFiles,textFiles
              ,musicFiles,title,windowSize,delayTime) where
@@ -18,12 +18,13 @@ type PointSize = Int
 
 data State = State{pos :: Pos, kec :: CInt, cac :: CInt, cpn :: Int, dir :: CInt
                   , itx :: Bool, lec :: Int, txi :: Int, tec :: CInt, tsc :: CInt
-                  , gmp :: Gmap, tim :: Integer}
+                  , gmp :: Gmap, msc :: V2 CInt, tim :: Integer}
 -- pos: Position , kec: KeyEventCount
 -- cac: CharaAnimeCount, cpn: CharaPictureNumber
 -- dir: Direction
 -- itx: Is Text On? lec: LetterCount
 -- txi: TextIndex, tec: TextEventCount, tsc: TextScrollPoints
+-- mps: Map Scroll
 
 data Fchr = Ro | Hi | Os deriving (Eq,Enum) -- Roman, Hiragana, oshite
 
@@ -35,7 +36,7 @@ windowSize = V2 480 600
 
 initState :: State
 initState = State{pos=initPlayerPosition, kec=0, cac=initCharaAnimeCount, cpn=0, dir=0 
-                 , itx=False, lec=0, txi=0, tec=3, tsc=0, gmp=testMap, tim=0}                   
+                 , itx=False, lec=0, txi=0, tec=3, tsc=0, gmp=testMap, msc=V2 0 0, tim=0}                   
 
 fontFiles :: [FilePath]
 fontFiles = map ("font/"++) ["monaco.ttf","marugo.TTC","oshide.otf"]
@@ -95,6 +96,12 @@ textLimitBelow = 500
 
 textLimitLeft :: CInt
 textLimitLeft = 50
+
+mapLimitRight :: CInt
+mapLimitRight = 400
+
+mapLimitDown :: CInt
+mapLimitDown = 400
 
 charaSize :: CInt
 charaSize = 48 

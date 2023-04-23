@@ -35,8 +35,8 @@ testMap :: Gmap
 testMap = makeGmap testdata
 
 testdata :: [String] 
-testdata = ["T...."
-           ,".XX.n"
-           ,"...k."
-           ,"mu..."
-           ,"C.X.Y"]
+testdata = ["T...XX...."
+           ,".XX.n..X.."
+           ,"...k.X...."
+           ,"mu...X.XX."
+           ,"C.X......Y"]

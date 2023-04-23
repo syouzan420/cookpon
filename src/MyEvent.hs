@@ -8,13 +8,13 @@ import MyDataJ (Gmap,Tマス(..),T地形(..))
 
 inputEvent :: State -> [T.Text] -> IO (State,Bool)
 inputEvent st tx = do
-  let State (V2 px py) kc _ _ dr it lc ti _ _ mp _ = st
+  let State (V2 px py) kc _ _ dr it lc ti _ _ mp (V2 sx sy) _ = st
   [qPressed,spReleased,hPressed,jPressed,kPressed,lPressed] <- myInput 
   let len = length tx
   let tlen = T.length (tx!!ti)
   let (V2 lfp upp) = initGamePosition
-  let (V2 gx gy) = V2 ((round$(fromIntegral (px-lfp)::Float) / fromIntegral charaSize)::Int) 
-                      (round$(fromIntegral (py-upp)::Float) / fromIntegral charaSize)
+  let (V2 gx gy) = V2 ((round$(fromIntegral (px+sx-lfp)::Float) / fromIntegral charaSize)::Int) 
+                      (round$(fromIntegral (py+sy-upp)::Float) / fromIntegral charaSize)
   let iLeftEdge = gx == 0 
   let iUpEdge = gy == 0 
   let mapHLength = length (head mp)
