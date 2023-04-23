@@ -8,9 +8,9 @@ import SDL.Video.Renderer(Surface)
 import MyData(Fchr(..),fontColor,fontSize,fontFiles,textFiles,imageFiles)
 import MyFile(fileRead)
 
-myLoad :: IO ([T.Text],([Surface],[Surface]))
-myLoad = do
-  (docl,fontTS) <- loadText fontSize Hi fontFiles (head textFiles) 
+myLoad :: Int -> IO ([T.Text],([Surface],[Surface]))
+myLoad i = do
+  (docl,fontTS) <- loadText fontSize Hi fontFiles (textFiles!!i)
   imageS <- loadImages imageFiles 
   return (docl,(fontTS,imageS))
 

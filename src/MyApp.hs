@@ -12,7 +12,7 @@ import MyData (initState)
 appMain :: IO ()
 appMain = 
   withMyInit $ do
-    (docl,sur) <- myLoad
+    (docl,sur) <- myLoad 0
     withMyVideo sur $ 
       \(renderer,ftexs,itexs) -> do
         state <- newIORef initState 

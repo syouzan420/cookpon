@@ -47,7 +47,7 @@ imageFiles = map (\s -> "images/"++s++".png") ["cook5","cook6","takapon1","takap
                                               ,"kome","onigiri","mizu","nori","ume"]
 
 textFiles :: [FilePath]
-textFiles = map ("texts/"++) ["cook0.txt","cook0.txt"]
+textFiles = map ("texts/"++) ["cook0.txt","test.txt"]
 
 musicFiles :: [FilePath]
 musicFiles = ["music/test.mp3"]
