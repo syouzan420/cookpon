@@ -98,7 +98,7 @@ textLimitLeft :: CInt
 textLimitLeft = 50
 
 mapLimitRight :: CInt
-mapLimitRight = 400
+mapLimitRight = 380 
 
 mapLimitDown :: CInt
 mapLimitDown = 400
