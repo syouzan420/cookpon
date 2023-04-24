@@ -11,7 +11,7 @@ import Linear.V4 (V4(..))
 import Foreign.C.Types (CInt)
 import qualified Data.Text as T
 import Data.Word (Word8,Word32)
-import MyDataJ (Gmap,testMap)
+import MyDataJ (Gmap,testMap,findGpos,Tモノ(..),Tキャラ(..))
 
 type Pos = V2 CInt 
 type PointSize = Int
@@ -35,14 +35,14 @@ windowSize :: V2 CInt
 windowSize = V2 480 600
 
 initState :: State
-initState = State{pos=initPlayerPosition, kec=0, cac=initCharaAnimeCount, cpn=0, dir=0 
-                 , itx=False, lec=0, txi=0, tec=3, tsc=0, gmp=testMap, msc=V2 0 0, tim=0}                   
+initState = State{pos=realPlayerPosition, kec=0, cac=initCharaAnimeCount, cpn=0, dir=0 
+                 , itx=False, lec=0, txi=0, tec=3, tsc=0, gmp=testMap, msc=initScr, tim=0}                   
 
 fontFiles :: [FilePath]
 fontFiles = map ("font/"++) ["monaco.ttf","marugo.TTC","oshide.otf"]
 
 imageFiles :: [FilePath]
-imageFiles = map (\s -> "images/"++s++".png") ["cook5","cook6","takapon1","takapon2"
+imageFiles = map (\s -> "images/"++s++".png") ["cook5","cook6","takapon1","takapon2","cook5","cook6"
                                               ,"chikei0","chikei1"
                                               ,"kome","onigiri","mizu","nori","ume"]
 
@@ -65,7 +65,23 @@ initTextEventCount :: CInt
 initTextEventCount = 0
 
 initPlayerPosition :: V2 CInt
-initPlayerPosition = V2 70 70
+initPlayerPosition = initGamePosition + V2 charaSize charaSize * head (findGpos (C Teru) testMap)
+
+realPlayerPosition :: V2 CInt
+realPlayerPosition = let (V2 initPlayerX initPlayerY) = initPlayerPosition
+                         (V2 initGameX initGameY) = initGamePosition
+                         realPlayerX = if initPlayerX>mapLimitRight then 
+                            ((mapLimitRight-initGameX) `div` charaSize)*charaSize + initGameX else initPlayerX
+                         realPlayerY = if initPlayerY>mapLimitDown then
+                            ((mapLimitDown-initGameY) `div` charaSize)*charaSize + initGameY else initPlayerY
+                      in V2 realPlayerX realPlayerY
+
+initScr :: V2 CInt
+initScr = let (V2 initPlayerX initPlayerY) = initPlayerPosition
+              (V2 realPlayerX realPlayerY) = realPlayerPosition
+              scrX = if initPlayerX>mapLimitRight then initPlayerX-realPlayerX else 0
+              scrY = if initPlayerY>mapLimitDown then initPlayerY-realPlayerY else 0
+           in V2 scrX scrY
 
 initGamePosition :: V2 CInt
 initGamePosition = V2 70 70

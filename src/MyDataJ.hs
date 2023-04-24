@@ -1,8 +1,10 @@
-module MyDataJ(T位置,Tキャラ(..),T材料(..),Tモノ(..),T地形(..),Tマス(..),chaNum,zaiNum,tikNum,Gmap,testMap) where
+module MyDataJ(T位置,Tキャラ(..),T材料(..),Tモノ(..),T地形(..),Tマス(..)
+              ,chaNum,zaiNum,tikNum,Gmap,testMap,makeGmap,findGpos) where
 
 import Linear.V2(V2(..))
+import Foreign.C.Types (CInt)
 
-type T位置 = V2 Int
+type T位置 = V2 CInt
 data Tキャラ = Taka | Teru | Cook deriving (Eq,Enum,Bounded,Show)
 data T材料 = F米 | Fおにぎり | F水 | F海苔 | F梅 deriving (Eq,Enum,Bounded,Show)
 data Tモノ = No | C Tキャラ | I T材料 deriving (Eq,Show)
@@ -29,7 +31,11 @@ charToMasu ch ps =
    in Tマス ps mono chikei
 
 makeGmap :: [String] -> Gmap
-makeGmap lst = zipWith (\str py->zipWith (\ch px->charToMasu ch (V2 px py)) str [(0::Int)..]) lst [(0::Int)..]
+makeGmap lst = zipWith (\str py->zipWith (\ch px->charToMasu ch (V2 px py)) str [(0::CInt)..]) lst [(0::CInt)..]
+
+findGpos :: Tモノ -> Gmap -> [T位置]
+findGpos _ [] = []
+findGpos mon (ml:mls) = foldl (\ac (Tマス p m _) -> if m==mon then p:ac else ac) [] ml ++ findGpos mon mls
 
 testMap :: Gmap
 testMap = makeGmap testdata

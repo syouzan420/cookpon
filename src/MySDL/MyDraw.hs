@@ -16,7 +16,7 @@ myDraw :: State -> [T.Text] -> Renderer -> [Texture] -> [Texture] -> IO State
 myDraw st tx re ftexs itexs = do
   let State ps _ _ cp _ it lc ti _ ts mp ms _ = st
   initDraw re
-  mapDraw re (drop 4 itexs) mp ms it 
+  mapDraw re (drop (chaNum*2) itexs) mp ms it 
   charaDraw re (take 2 itexs) ps cp it 
   let startTextPosition = initTextPosition + V2 ts 0
   nts <- if it then textsDraw re ftexs startTextPosition ts tx ti lc 0 else return ts
@@ -41,11 +41,11 @@ mapLinesDraw re itexs (mp:mps) ms i = do
   let charaSizeH = charaSize `div` 2
   let charaSizeQ = charaSize `div` 4
   mapM_ (\(Tマス (V2 x _) _ chi)-> copy re (itexs!!fromEnum chi) Nothing 
-      (Just$Rectangle (P (position+V2 (charaSize*fromIntegral x) 0))(V2 charaSize charaSize))) mp
+      (Just$Rectangle (P (position+V2 (charaSize*x) 0))(V2 charaSize charaSize))) mp
   mapM_ (\(Tマス (V2 x _) mon _)-> if monoToNum mon < (1+chaNum) 
                        then return ()
                        else copy re (itexs!!(monoToNum mon - chaNum - 1 + tikNum)) Nothing 
-      (Just$Rectangle (P (position+V2 charaSizeQ 0+V2 (charaSize*fromIntegral x) charaSizeQ))(V2 charaSizeH charaSizeH))) mp
+      (Just$Rectangle (P (position+V2 charaSizeQ 0+V2 (charaSize*x) charaSizeQ))(V2 charaSizeH charaSizeH))) mp
   mapLinesDraw re itexs mps ms (i+1)
 
 monoToNum :: Tモノ -> Int
