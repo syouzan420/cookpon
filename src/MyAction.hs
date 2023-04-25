@@ -2,12 +2,14 @@ module MyAction(myAction) where
 
 import qualified Data.Text as T 
 import Linear.V2(V2(..))
-import MyData (State(..),initCharaAnimeCount,initTextEventCount,movePixel
+import MyData (State(..),Chara(..),initCharaAnimeCount,initTextEventCount,movePixel
               ,mapLimitRight,mapLimitDown,initGamePosition)
 
 myAction :: State -> [T.Text] -> State 
 myAction st tx = do
-  let State (V2 px py) kc ca cp dr it lc ti tc _ _ (V2 sx sy) _ = st 
+  let State (pl:cs) kc it lc ti tc _ _ (V2 sx sy) _ = st 
+      Chara (V2 px py) ca cp dr = pl
+      cps = map cpn cs
       dp = movePixel 
       ndr = if kc==0 then 0 else dr
       npx = case ndr of 3 -> px - dp; 7 -> px + dp; _ -> px
@@ -31,5 +33,8 @@ myAction st tx = do
       nkec = if kc==0 then 0 else kc-1
       ncac = if ca==0 then initCharaAnimeCount else ca-1
       ncp = if ca==0 then if cp==0 then 1 else 0 else cp
-      nst = st{pos=V2 npx' npy',kec=nkec,cac=ncac,cpn=ncp,dir=ndr,lec=nlc,tec=ntc,msc=V2 nsx nsy}
+      ncps = if ca==0 then map (\c -> if c==0 then 1 else 0) cps else cps
+      npl = pl{pos=V2 npx' npy',cac=ncac,cpn=ncp,dir=ndr}
+      ncs = zipWith (\c nc -> c{cpn=nc}) cs ncps
+      nst = st{chas=npl:ncs,kec=nkec,lec=nlc,tec=ntc,msc=V2 nsx nsy}
    in nst 

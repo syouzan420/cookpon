@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module MyData(Pos,State(..),Fchr(..),initState,initKeyEventCount,initCharaAnimeCount
+module MyData(Pos,Chara(..),State(..),Fchr(..),initState,initKeyEventCount,initCharaAnimeCount
              ,initTextEventCount,initTextPosition,initPlayerPosition,initGamePosition
              ,fontSize,fontColor,hideAlpha,letterSize,mapLimitRight,mapLimitDown
              ,verticalLetterGap,horizontalLetterGap,textLimitBelow,textLimitLeft,charaSize
@@ -11,12 +11,14 @@ import Linear.V4 (V4(..))
 import Foreign.C.Types (CInt)
 import qualified Data.Text as T
 import Data.Word (Word8,Word32)
-import MyDataJ (Gmap,testMap,findGpos,Tモノ(..),Tキャラ(..))
+import MyDataJ (Gmap,testMap,findGpos,Tキャラ(..),Tモノ(..))
 
 type Pos = V2 CInt 
 type PointSize = Int
 
-data State = State{pos :: Pos, kec :: CInt, cac :: CInt, cpn :: Int, dir :: CInt
+data Chara = Chara{pos :: Pos, cac :: CInt, cpn :: Int, dir :: CInt}
+
+data State = State{chas :: [Chara], kec :: CInt
                   , itx :: Bool, lec :: Int, txi :: Int, tec :: CInt, tsc :: CInt
                   , gmp :: Gmap, msc :: V2 CInt, tim :: Integer}
 -- pos: Position , kec: KeyEventCount
@@ -35,8 +37,20 @@ windowSize :: V2 CInt
 windowSize = V2 480 600
 
 initState :: State
-initState = State{pos=realPlayerPosition, kec=0, cac=initCharaAnimeCount, cpn=0, dir=0 
+initState = State{chas=[initPlayer,initTaka,initCook], kec=0
                  , itx=False, lec=0, txi=0, tec=3, tsc=0, gmp=testMap, msc=initScr, tim=0}                   
+
+initPosition :: Tキャラ -> Gmap -> V2 CInt
+initPosition chara gm  = initGamePosition + V2 charaSize charaSize * head (findGpos (C chara) gm)
+
+initPlayer :: Chara
+initPlayer = Chara{pos=realPlayerPosition, cac=initCharaAnimeCount, cpn=0, dir=0}
+
+initTaka :: Chara
+initTaka = Chara{pos=initTakaPosition, cac=initCharaAnimeCount, cpn=0, dir=0}
+
+initCook :: Chara
+initCook = Chara{pos=initCookPosition, cac=initCharaAnimeCount, cpn=0, dir=0}
 
 fontFiles :: [FilePath]
 fontFiles = map ("font/"++) ["monaco.ttf","marugo.TTC","oshide.otf"]
@@ -64,10 +78,16 @@ initCharaAnimeCount = 8
 initTextEventCount :: CInt
 initTextEventCount = 0
 
-initPlayerPosition :: V2 CInt
-initPlayerPosition = initGamePosition + V2 charaSize charaSize * head (findGpos (C Teru) testMap)
+initTakaPosition :: Pos 
+initTakaPosition = initPosition Taka testMap
 
-realPlayerPosition :: V2 CInt
+initCookPosition :: Pos 
+initCookPosition = initPosition Cook testMap
+
+initPlayerPosition :: Pos 
+initPlayerPosition = initPosition Teru testMap
+
+realPlayerPosition :: Pos 
 realPlayerPosition = let (V2 initPlayerX initPlayerY) = initPlayerPosition
                          (V2 initGameX initGameY) = initGamePosition
                          realPlayerX = if initPlayerX>mapLimitRight then 

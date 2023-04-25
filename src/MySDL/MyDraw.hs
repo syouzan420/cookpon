@@ -7,17 +7,20 @@ import SDL.Vect (Point(P),V2(..),V4(..))
 import Control.Monad.IO.Class (MonadIO)
 import qualified Data.Text as T
 import Foreign.C.Types (CInt)
-import MyData(State(..),Fchr(..),Pos,charaSize,fontSize,letterSize
+import MyData(State(..),Fchr(..),Pos,Chara(..),charaSize,fontSize,letterSize
              ,initTextPosition,initGamePosition,verticalLetterGap,horizontalLetterGap
              ,textLimitBelow,textLimitLeft,hideAlpha)
 import MyDataJ(Gmap,Tマス(..),Tモノ(..),chaNum,tikNum)
 
 myDraw :: State -> [T.Text] -> Renderer -> [Texture] -> [Texture] -> IO State
 myDraw st tx re ftexs itexs = do
-  let State ps _ _ cp _ it lc ti _ ts mp ms _ = st
+  let State chs _ it lc ti _ ts mp ms _ = st
+  let pss = map pos chs; cps = map cpn chs
+  let pss2 = map (\ps -> ps - ms) (tail pss)
+  let pss' = head pss:pss2
   initDraw re
   mapDraw re (drop (chaNum*2) itexs) mp ms it 
-  charaDraw re (take 2 itexs) ps cp it 
+  charaDraw re (take (chaNum*2) itexs) pss' cps it 
   let startTextPosition = initTextPosition + V2 ts 0
   nts <- if it then textsDraw re ftexs startTextPosition ts tx ti lc 0 else return ts
   present re
@@ -54,11 +57,11 @@ monoToNum mn = case mn of
                  C cha -> 1 + fromEnum cha
                  I zai -> 1 + chaNum + fromEnum zai
 
-charaDraw :: Renderer -> [Texture] -> Pos -> Int -> Bool -> IO ()
-charaDraw re itexs ps cp it = do
-  let chara = itexs!!cp
-  textureAlphaMod chara $= if it then hideAlpha else 255
-  copy re chara Nothing (Just$Rectangle (P ps) (V2 charaSize charaSize))
+charaDraw :: Renderer -> [Texture] -> [Pos] -> [Int] -> Bool -> IO ()
+charaDraw re itexs pss cps it = do
+  let charas = zipWith (\i c -> itexs!!(i+c)) [0,2..] cps
+  mapM_ (\chara -> textureAlphaMod chara $= if it then hideAlpha else 255) charas
+  mapM_ (\(chara,ps) -> copy re chara Nothing (Just$Rectangle (P ps) (V2 charaSize charaSize))) (zip charas pss)
 
 textsDraw :: Renderer -> [Texture] -> Pos -> CInt -> [T.Text] -> Int -> Int -> Int -> IO CInt 
 textsDraw re texs ps sc tx ti lc i = do

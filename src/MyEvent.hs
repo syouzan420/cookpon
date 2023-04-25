@@ -2,13 +2,14 @@ module MyEvent(inputEvent) where
 
 import Linear.V2 (V2(..))
 import qualified Data.Text as T
-import MyData (State(..),initKeyEventCount,initGamePosition,charaSize)
+import MyData (Chara(..),State(..),initKeyEventCount,initGamePosition,charaSize)
 import MySDL.MyInput (myInput)
 import MyDataJ (Gmap,Tマス(..),T地形(..))
 
 inputEvent :: State -> [T.Text] -> IO (State,Bool)
 inputEvent st tx = do
-  let State (V2 px py) kc _ _ dr it lc ti _ _ mp (V2 sx sy) _ = st
+  let State (pl:cs) kc it lc ti _ _ mp (V2 sx sy) _ = st
+  let Chara (V2 px py) _ _ dr = pl
   [qPressed,spReleased,hPressed,jPressed,kPressed,lPressed] <- myInput 
   let len = length tx
   let tlen = T.length (tx!!ti)
@@ -36,7 +37,8 @@ inputEvent st tx = do
         | otherwise = it
   let nti = if bNewLine then ti+1 else ti 
       nlec = if bNewLine then 0 else lc
-      st' = st{kec=nkec,dir=ndr,itx=nit,lec=nlec,txi=nti}
+      npl = pl{dir=ndr}
+      st' = st{chas=npl:cs,kec=nkec,itx=nit,lec=nlec,txi=nti}
   return (st',qPressed)
 
 isPass :: V2 Int -> Gmap -> Bool
