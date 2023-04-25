@@ -56,7 +56,7 @@ fontFiles :: [FilePath]
 fontFiles = map ("font/"++) ["monaco.ttf","marugo.TTC","oshide.otf"]
 
 imageFiles :: [FilePath]
-imageFiles = map (\s -> "images/"++s++".png") ["cook5","cook6","takapon1","takapon2","cook5","cook6"
+imageFiles = map (\s -> "images/"++s++".png") ["teru0","teru1","takapon1","takapon2","cook5","cook6"
                                               ,"chikei0","chikei1"
                                               ,"kome","onigiri","mizu","nori","ume"]
 
