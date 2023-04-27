@@ -44,5 +44,5 @@ inputEvent st tx = do
 isPass :: V2 Int -> Gmap -> Bool
 isPass (V2 gx gy) mp = let ln = mp!!gy
                            tg = ln!!gx
-                           Tマス _ _ chi = tg
+                           Tマス _ _ _ chi = tg
                         in chi==T道

@@ -11,7 +11,7 @@ import Linear.V4 (V4(..))
 import Foreign.C.Types (CInt)
 import qualified Data.Text as T
 import Data.Word (Word8,Word32)
-import MyDataJ (Gmap,testMap,findGpos,Tキャラ(..),Tモノ(..))
+import MyDataJ (Gmap,testMap,findCpos,Tキャラ(..),Tモノ(..))
 
 type Pos = V2 CInt 
 type PointSize = Int
@@ -41,7 +41,7 @@ initState = State{chas=[initPlayer,initTaka,initCook], kec=0
                  , itx=False, lec=0, txi=0, tec=3, tsc=0, gmp=testMap, msc=initScr, tim=0}                   
 
 initPosition :: Tキャラ -> Gmap -> V2 CInt
-initPosition chara gm  = initGamePosition + V2 charaSize charaSize * head (findGpos (C chara) gm)
+initPosition chara gm  = initGamePosition + V2 charaSize charaSize * head (findCpos chara gm)
 
 initPlayer :: Chara
 initPlayer = Chara{pos=realPlayerPosition, cac=initCharaAnimeCount, cpn=0, dir=0}
@@ -58,7 +58,8 @@ fontFiles = map ("font/"++) ["monaco.ttf","marugo.TTC","oshide.otf"]
 imageFiles :: [FilePath]
 imageFiles = map (\s -> "images/"++s++".png") ["teru0","teru1","takapon1","takapon2","cook5","cook6"
                                               ,"chikei0","chikei1"
-                                              ,"kome","onigiri","mizu","nori","ume"]
+                                              ,"kome","mizu","nori","ume"
+                                              ,"onigiri"]
 
 textFiles :: [FilePath]
 textFiles = map ("texts/"++) ["cook0.txt","test.txt"]

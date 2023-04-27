@@ -10,7 +10,7 @@ import Foreign.C.Types (CInt)
 import MyData(State(..),Fchr(..),Pos,Chara(..),charaSize,fontSize,letterSize
              ,initTextPosition,initGamePosition,verticalLetterGap,horizontalLetterGap
              ,textLimitBelow,textLimitLeft,hideAlpha)
-import MyDataJ(Gmap,Tマス(..),Tモノ(..),chaNum,tikNum)
+import MyDataJ(Gmap,Tマス(..),Tモノ(..),chaNum,tikNum,zaiNum)
 
 myDraw :: State -> [T.Text] -> Renderer -> [Texture] -> [Texture] -> IO State
 myDraw st tx re ftexs itexs = do
@@ -19,8 +19,8 @@ myDraw st tx re ftexs itexs = do
   let pss2 = map (\ps -> ps - ms) (tail pss)
   let pss' = head pss:pss2
   initDraw re
-  mapDraw re (drop (chaNum*2) itexs) mp ms it 
-  charaDraw re (take (chaNum*2) itexs) pss' cps it 
+  mapDraw re (drop ((chaNum-1)*2) itexs) mp ms it 
+  charaDraw re (take ((chaNum-1)*2) itexs) pss' cps it 
   let startTextPosition = initTextPosition + V2 ts 0
   nts <- if it then textsDraw re ftexs startTextPosition ts tx ti lc 0 else return ts
   present re
@@ -43,19 +43,18 @@ mapLinesDraw re itexs (mp:mps) ms i = do
   let position = initGamePosition + (V2 0 charaSize*fromIntegral i) - ms
   let charaSizeH = charaSize `div` 2
   let charaSizeQ = charaSize `div` 4
-  mapM_ (\(Tマス (V2 x _) _ chi)-> copy re (itexs!!fromEnum chi) Nothing 
+  mapM_ (\(Tマス (V2 x _) _ _ chi)-> copy re (itexs!!fromEnum chi) Nothing 
       (Just$Rectangle (P (position+V2 (charaSize*x) 0))(V2 charaSize charaSize))) mp
-  mapM_ (\(Tマス (V2 x _) mon _)-> if monoToNum mon < (1+chaNum) 
-                       then return ()
-                       else copy re (itexs!!(monoToNum mon - chaNum - 1 + tikNum)) Nothing 
+  mapM_ (\(Tマス (V2 x _) mon _ _)-> if mon==No then return ()
+                       else copy re (itexs!!(monoToNum mon - 1 + tikNum)) Nothing 
       (Just$Rectangle (P (position+V2 charaSizeQ 0+V2 (charaSize*x) charaSizeQ))(V2 charaSizeH charaSizeH))) mp
   mapLinesDraw re itexs mps ms (i+1)
 
 monoToNum :: Tモノ -> Int
 monoToNum mn = case mn of
                  No -> 0
-                 C cha -> 1 + fromEnum cha
-                 I zai -> 1 + chaNum + fromEnum zai
+                 I zai -> 1 + fromEnum zai 
+                 F ryo -> 1 + zaiNum + fromEnum ryo 
 
 charaDraw :: Renderer -> [Texture] -> [Pos] -> [Int] -> Bool -> IO ()
 charaDraw re itexs pss cps it = do
