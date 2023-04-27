@@ -20,9 +20,6 @@ chaNum = fromEnum (maxBound :: Tキャラ) + 1
 zaiNum :: Int
 zaiNum = fromEnum (maxBound :: T材料) + 1
 
-ryoNum :: Int
-ryoNum = fromEnum (maxBound :: T料理) + 1
-
 tikNum :: Int
 tikNum = fromEnum (maxBound :: T地形) + 1
 

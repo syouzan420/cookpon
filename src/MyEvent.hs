@@ -8,8 +8,9 @@ import MyDataJ (Gmap,Tマス(..),T地形(..))
 
 inputEvent :: State -> [T.Text] -> IO (State,Bool)
 inputEvent st tx = do
-  let State (pl:cs) kc it lc ti _ _ mp (V2 sx sy) _ = st
-  let Chara (V2 px py) _ _ dr = pl
+  let State cha kc it lc ti _ _ mp (V2 sx sy) _ = st
+  let pl = head cha
+  let Chara (V2 px py) _ _ dr = pl 
   [qPressed,spReleased,hPressed,jPressed,kPressed,lPressed] <- myInput 
   let len = length tx
   let tlen = T.length (tx!!ti)
@@ -38,7 +39,7 @@ inputEvent st tx = do
   let nti = if bNewLine then ti+1 else ti 
       nlec = if bNewLine then 0 else lc
       npl = pl{dir=ndr}
-      st' = st{chas=npl:cs,kec=nkec,itx=nit,lec=nlec,txi=nti}
+      st' = st{chas=npl:tail cha,kec=nkec,itx=nit,lec=nlec,txi=nti}
   return (st',qPressed)
 
 isPass :: V2 Int -> Gmap -> Bool
