@@ -10,7 +10,7 @@ inputEvent :: State -> [T.Text] -> IO (State,Bool)
 inputEvent st tx = do
   let State cha kc it lc ti _ _ mp (V2 sx sy) _ = st
   let pl = head cha
-  let Chara (V2 px py) _ _ dr = pl 
+  let Chara (V2 px py) _ _ dr _ = pl 
   [qPressed,spReleased,hPressed,jPressed,kPressed,lPressed] <- myInput 
   let len = length tx
   let tlen = T.length (tx!!ti)

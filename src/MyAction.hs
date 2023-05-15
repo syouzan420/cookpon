@@ -8,7 +8,7 @@ import MyData (State(..),Chara(..),initCharaAnimeCount,initTextEventCount,movePi
 myAction :: State -> [T.Text] -> State 
 myAction st tx = do
   let State (pl:cs) kc it lc ti tc _ _ (V2 sx sy) _ = st 
-      Chara (V2 px py) ca cp dr = pl
+      Chara (V2 px py) ca cp dr bls = pl
       cps = map cpn cs
       dp = movePixel 
       ndr = if kc==0 then 0 else dr

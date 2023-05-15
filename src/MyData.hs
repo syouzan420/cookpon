@@ -16,17 +16,17 @@ import MyDataJ (Gmap,testMap,findCpos,Tキャラ(..),Tモノ(..))
 type Pos = V2 CInt 
 type PointSize = Int
 
-data Chara = Chara{pos :: Pos, cac :: CInt, cpn :: Int, dir :: CInt}
+data Chara = Chara{pos :: Pos, cac :: CInt, cpn :: Int, dir :: CInt, bel :: [Tモノ]}
+-- pos: Position, cac: CharaAnimeCount, cpn: CharaPictureNumber, dir: Direction
+-- bel: Belongings 
 
 data State = State{chas :: [Chara], kec :: CInt
                   , itx :: Bool, lec :: Int, txi :: Int, tec :: CInt, tsc :: CInt
                   , gmp :: Gmap, msc :: V2 CInt, tim :: Integer}
--- pos: Position , kec: KeyEventCount
--- cac: CharaAnimeCount, cpn: CharaPictureNumber
--- dir: Direction
+-- kec: KeyEventCount
 -- itx: Is Text On? lec: LetterCount
 -- txi: TextIndex, tec: TextEventCount, tsc: TextScrollPoints
--- mps: Map Scroll
+-- msc: Map Scroll
 
 data Fchr = Ro | Hi | Os deriving (Eq,Enum) -- Roman, Hiragana, oshite
 
