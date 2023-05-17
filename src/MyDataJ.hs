@@ -42,6 +42,24 @@ findCpos :: Tキャラ -> Gmap -> [T位置]
 findCpos _ [] = []
 findCpos car (ml:mls) = foldl (\ac (Tマス p _ c _) -> if c==car then p:ac else ac) [] ml ++ findCpos car mls
 
+delFromGmap :: T位置 -> Gmap -> Gmap
+delFromGmap ps = updateGmap ps No 
+
+addToGmap :: T位置 -> Tモノ -> Gmap -> Gmap
+addToGmap ps mono gmp = let (Tマス _ pmono _ _) = findFromPos ps gmp 
+                         in if pmono==No then updateGmap ps mono gmp else gmp
+
+findFromPos :: T位置 -> Gmap -> Tマス
+findFromPos (V2 px py) gmp = (gmp!!fromIntegral py)!!fromIntegral px 
+
+updateGmap :: T位置 -> Tモノ -> Gmap -> Gmap
+updateGmap (V2 px py) mono gmp =
+  let px' = fromIntegral px; py' = fromIntegral py
+      (hgls,tgl:lgls) = splitAt py' gmp
+      (hgs,(Tマス _ _ chara chikei):lgs) = splitAt px' tgl
+      nline = hgs++[Tマス (V2 px py) mono chara chikei]++lgs 
+   in hgls++[nline]++lgls 
+
 testMap :: Gmap
 testMap = makeGmap testdata
 
