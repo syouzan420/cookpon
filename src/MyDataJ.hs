@@ -1,5 +1,6 @@
 module MyDataJ(T位置,Tキャラ(..),T材料(..),Tモノ(..),T地形(..),Tマス(..)
-              ,chaNum,zaiNum,tikNum,Gmap,testMap,makeGmap,findCpos,findMpos) where
+              ,chaNum,zaiNum,tikNum,Gmap,testMap,makeGmap,findCpos,findMpos
+              ,delFromGmap) where
 
 import Linear.V2(V2(..))
 import Foreign.C.Types (CInt)

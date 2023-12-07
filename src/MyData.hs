@@ -44,13 +44,13 @@ initPosition :: Tキャラ -> Gmap -> V2 CInt
 initPosition chara gm  = initGamePosition + V2 charaSize charaSize * head (findCpos chara gm)
 
 initPlayer :: Chara
-initPlayer = Chara{pos=realPlayerPosition, cac=initCharaAnimeCount, cpn=0, dir=0}
+initPlayer = Chara{pos=realPlayerPosition, cac=initCharaAnimeCount, cpn=0, dir=0, bel=[]}
 
 initTaka :: Chara
-initTaka = Chara{pos=initTakaPosition, cac=initCharaAnimeCount, cpn=0, dir=0}
+initTaka = Chara{pos=initTakaPosition, cac=initCharaAnimeCount, cpn=0, dir=0, bel=[]}
 
 initCook :: Chara
-initCook = Chara{pos=initCookPosition, cac=initCharaAnimeCount, cpn=0, dir=0}
+initCook = Chara{pos=initCookPosition, cac=initCharaAnimeCount, cpn=0, dir=0, bel=[]}
 
 fontFiles :: [FilePath]
 fontFiles = map ("font/"++) ["monaco.ttf","marugo.TTC","oshide.otf"]
